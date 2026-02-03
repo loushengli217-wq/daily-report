@@ -211,7 +211,7 @@ def generate_report(processor, table_configs):
     report_lines = []
 
     report_lines.append("=" * 100)
-    report_lines.append("📊 二重螺旋游戏数据分析报告")
+    report_lines.append(f"《二重螺旋-海外》 - {yesterday_date} 日报")
     report_lines.append("=" * 100)
 
     # 一、关键指标分析
@@ -516,9 +516,9 @@ def generate_report(processor, table_configs):
         elif current_arppu < arppu_avg * 0.9:
             report_lines.append(f"  - 付费用户付费意愿减弱，低于平均值{(1 - current_arppu / arppu_avg) * 100:.1f}%")
 
-    # 报告说明
+    # 趋势报告说明
     report_lines.append("\n---")
-    report_lines.append(f"**报告说明：** 本报告基于{sorted_dates[0]}至{sorted_dates[-1]}期间的实际数据生成，所有分析均基于提供的数据，未编造任何信息。")
+    report_lines.append(f"**趋势报告说明：** 本报告基于{recent_7_days[0]}至{recent_7_days[-1]}期间（近7日）的实际数据生成，所有分析均基于提供的数据，未编造任何信息。")
 
     # 关键发现
     report_lines.append("\n## 🔍 关键发现")
