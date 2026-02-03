@@ -1,6 +1,9 @@
 #!/bin/bash
 # 启动日报定时调度器（后台运行）
 
+# 设置自定义 Webhook URL
+export FEISHU_WEBHOOK_URL="https://open.feishu.cn/open-apis/bot/v2/hook/5d969aa6-d165-4dc0-9165-bf20fb2a13ee"
+
 # 创建日志目录
 mkdir -p logs
 
@@ -24,7 +27,8 @@ echo $! > scheduler.pid
 
 echo "✅ 调度器已启动（PID: $!）"
 echo "📝 日志文件: logs/scheduler.log"
-echo "⏰ 调度规则: 每天上午 10:00 执行"
+echo "⏰ 调度规则: 每天下午 17:30 执行"
+echo "🔗 Webhook: ${FEISHU_WEBHOOK_URL:0:50}..."
 echo ""
 echo "查看日志: tail -f logs/scheduler.log"
 echo "停止调度器: bash scripts/stop_scheduler.sh"

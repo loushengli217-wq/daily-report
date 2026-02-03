@@ -56,12 +56,20 @@ def main():
     logger.info("启动每日日报定时调度器")
     logger.info("="*80)
     logger.info(f"当前时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    logger.info("调度规则: 每天上午 10:00 执行")
+    logger.info("调度规则: 每天下午 17:30 执行")
+
+    # 检查自定义 webhook
+    webhook_url = os.getenv("FEISHU_WEBHOOK_URL")
+    if webhook_url:
+        logger.info(f"使用自定义 Webhook: {webhook_url[:50]}...")
+    else:
+        logger.info("使用集成服务 Webhook")
+
     logger.info("按 Ctrl+C 停止调度器")
     logger.info("="*80)
 
-    # 设置定时任务：每天上午10点执行
-    schedule.every().day.at("10:00").do(run_report)
+    # 设置定时任务：每天下午17:30执行
+    schedule.every().day.at("17:30").do(run_report)
 
     # 首次启动时检查是否需要立即执行（如果是10点之后）
     current_hour = datetime.now().hour

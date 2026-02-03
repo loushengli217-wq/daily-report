@@ -21,9 +21,14 @@ from generate_daily_report import generate_report, MultiTableDataProcessor
 def send_to_feishu(title: str, markdown_content: str) -> bool:
     """发送报告到飞书群组"""
     try:
-        client = Client()
-        credential = client.get_integration_credential("integration-feishu-message")
-        webhook_url = json.loads(credential)["webhook_url"]
+        # 优先使用环境变量中的 webhook URL
+        webhook_url = os.getenv("FEISHU_WEBHOOK_URL")
+
+        # 如果环境变量不存在，则从集成服务获取
+        if not webhook_url:
+            client = Client()
+            credential = client.get_integration_credential("integration-feishu-message")
+            webhook_url = json.loads(credential)["webhook_url"]
 
         # 构建交互式卡片
         elements = [
