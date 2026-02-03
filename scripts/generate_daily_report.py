@@ -194,6 +194,7 @@ def generate_report(processor, table_configs):
         channel_date_groups[rec["date"]].append(rec)
 
     yesterday_channel_records = channel_date_groups.get(yesterday_date, [])
+    day_before_channel_records = channel_date_groups.get(day_before_date, [])
     yesterday_channel_summary = summarize_by_group(yesterday_channel_records)
 
     # 获取昨日国家数据
@@ -202,6 +203,7 @@ def generate_report(processor, table_configs):
         country_date_groups[rec["date"]].append(rec)
 
     yesterday_country_records = country_date_groups.get(yesterday_date, [])
+    day_before_country_records = country_date_groups.get(day_before_date, [])
     yesterday_country_summary = summarize_by_group(yesterday_country_records)
 
     # 获取近7天数据
@@ -237,58 +239,100 @@ def generate_report(processor, table_configs):
     report_lines.append(f"- ARPU：{format_change(y_data['arpu'], d_data['arpu'], 'ARPU')}")
     report_lines.append(f"- ARPPU：{format_change(y_data['arppu'], d_data['arppu'], 'ARPPU')}")
 
-    # 数据变化分析和推测
-    report_lines.append(f"\n**数据变化分析和推测：**")
+    # 变化原因细拆
+    report_lines.append(f"\n**变化原因细拆：**")
+    has_reason = False
 
-    # DAU变化分析
-    if y_data['dau'] != d_data['dau']:
-        dau_change_pct = round((y_data['dau'] - d_data['dau']) / d_data['dau'] * 100, 2) if d_data['dau'] > 0 else 0
-        if abs(dau_change_pct) > 5:
-            if dau_change_pct > 0:
-                report_lines.append(f"- **DAU提升{abs(dau_change_pct):.1f}%**：推测可能因为近期推广活动效果显现、用户留存优化或周末效应带来活跃用户增长")
-            else:
-                report_lines.append(f"- **DAU下降{abs(dau_change_pct):.1f}%**：推测可能因为新增用户减少、用户流失增加或非工作日效应导致活跃用户下滑")
+    # 分析各渠道的数据变化
+    if len(channel_records) > 0:
+        # 汇总前日和昨日的渠道数据
+        day_before_channel_summary = summarize_by_group(day_before_channel_records)
+        yesterday_channel_summary = summarize_by_group(yesterday_channel_records)
 
-    # 新增用户变化分析
-    if y_data['new_users'] != d_data['new_users']:
-        new_change_pct = round((y_data['new_users'] - d_data['new_users']) / d_data['new_users'] * 100, 2) if d_data['new_users'] > 0 else 0
-        if abs(new_change_pct) > 10:
-            if new_change_pct > 0:
-                report_lines.append(f"- **新增用户增长{abs(new_change_pct):.1f}%**：推测可能因为渠道投放增加、素材优化或营销活动带来新用户流入")
-            else:
-                report_lines.append(f"- **新增用户下降{abs(new_change_pct):.1f}%**：推测可能因为渠道投放减少、素材效果下降或市场竞争加剧导致新用户获取困难")
+        day_before_channels = day_before_channel_summary["groups"]
+        yesterday_channels = yesterday_channel_summary["groups"]
 
-    # 收入变化分析
-    if y_data['income'] != d_data['income']:
-        income_change_pct = round((y_data['income'] - d_data['income']) / d_data['income'] * 100, 2) if d_data['income'] > 0 else 0
-        if abs(income_change_pct) > 15:
-            if income_change_pct > 0:
-                report_lines.append(f"- **收入增长{abs(income_change_pct):.1f}%**：推测可能因为付费活动效果、新品上架或用户付费意愿增强")
-            else:
-                report_lines.append(f"- **收入下降{abs(income_change_pct):.1f}%**：推测可能因为付费活动结束、付费用户流失或付费意愿减弱")
+        # 分析收入变化归因
+        income_changes = {}
+        for channel_name in yesterday_channels:
+            day_before_income = day_before_channels.get(channel_name, {}).get("income", 0)
+            yesterday_income = yesterday_channels.get(channel_name, {}).get("income", 0)
+            income_change = yesterday_income - day_before_income
+            if abs(income_change) > 0:
+                income_changes[channel_name] = income_change
 
-    # 付费用户数变化分析
-    if y_data['paid_users'] != d_data['paid_users']:
-        paid_change_pct = round((y_data['paid_users'] - d_data['paid_users']) / d_data['paid_users'] * 100, 2) if d_data['paid_users'] > 0 else 0
-        if abs(paid_change_pct) > 10:
-            if paid_change_pct > 0:
-                report_lines.append(f"- **付费用户增长{abs(paid_change_pct):.1f}%**：推测可能因为付费转化优化、付费吸引力提升或新用户付费转化加快")
-            else:
-                report_lines.append(f"- **付费用户下降{abs(paid_change_pct):.1f}%**：推测可能因为付费用户流失、付费吸引力下降或新用户付费转化放缓")
+        # 找出收入变化最大的渠道
+        if income_changes:
+            max_income_change_channel = max(income_changes.items(), key=lambda x: abs(x[1]))
+            if abs(max_income_change_channel[1]) > 0 and abs(max_income_change_channel[1]) / abs(y_data['income'] - d_data['income']) > 0.3:
+                channel_name = max_income_change_channel[0]
+                change_amount = max_income_change_channel[1]
+                change_pct = round(change_amount / d_data['income'] * 100, 2) if d_data['income'] > 0 else 0
+                contribution_pct = round(abs(change_amount) / abs(y_data['income'] - d_data['income']) * 100, 0) if abs(y_data['income'] - d_data['income']) > 0 else 0
 
-    # 付费率变化分析
-    if abs(y_data['paid_rate'] - d_data['paid_rate']) > 0.5:
-        if y_data['paid_rate'] > d_data['paid_rate']:
-            report_lines.append(f"- **付费率提升**：付费转化效率提高，推测可能因为付费引导优化、付费点设计改进或用户付费意愿增强")
-        else:
-            report_lines.append(f"- **付费率下降**：付费转化效率降低，推测可能因为付费引导效果减弱、付费点设计问题或用户付费意愿下降")
+                if change_amount < 0:
+                    report_lines.append(f"- **收入下降{contribution_pct:.0f}%来自{channel_name}**：该渠道收入减少${abs(change_amount):,.2f}，占总收入下降的{contribution_pct:.0f}%")
+                else:
+                    report_lines.append(f"- **收入增长{contribution_pct:.0f}%来自{channel_name}**：该渠道收入增加${change_amount:,.2f}，占总收入增长的{contribution_pct:.0f}%")
+                has_reason = True
 
-    # ARPPU变化分析
-    if abs(y_data['arppu'] - d_data['arppu']) > 2:
-        if y_data['arppu'] > d_data['arppu']:
-            report_lines.append(f"- **ARPPU提升**：付费用户平均付费增加，推测可能因为高价值付费增多、套餐优化或用户付费深度提升")
-        else:
-            report_lines.append(f"- **ARPPU下降**：付费用户平均付费减少，推测可能因为低价值付费增多、套餐吸引力下降或用户付费深度降低")
+        # 分析DAU变化归因
+        dau_changes = {}
+        for channel_name in yesterday_channels:
+            day_before_dau = day_before_channels.get(channel_name, {}).get("dau", 0)
+            yesterday_dau = yesterday_channels.get(channel_name, {}).get("dau", 0)
+            dau_change = yesterday_dau - day_before_dau
+            if abs(dau_change) > 0:
+                dau_changes[channel_name] = dau_change
+
+        if dau_changes:
+            max_dau_change_channel = max(dau_changes.items(), key=lambda x: abs(x[1]))
+            if abs(max_dau_change_channel[1]) > 0 and abs(max_dau_change_channel[1]) / abs(y_data['dau'] - d_data['dau']) > 0.3:
+                channel_name = max_dau_change_channel[0]
+                change_amount = max_dau_change_channel[1]
+                contribution_pct = round(abs(change_amount) / abs(y_data['dau'] - d_data['dau']) * 100, 0) if abs(y_data['dau'] - d_data['dau']) > 0 else 0
+
+                if change_amount < 0:
+                    report_lines.append(f"- **DAU下降{contribution_pct:.0f}%来自{channel_name}**：该渠道DAU减少{abs(change_amount):,}，占总DAU下降的{contribution_pct:.0f}%")
+                else:
+                    report_lines.append(f"- **DAU增长{contribution_pct:.0f}%来自{channel_name}**：该渠道DAU增加{change_amount:,}，占总DAU增长的{contribution_pct:.0f}%")
+                has_reason = True
+
+    # 分析各国家的数据变化
+    if len(country_records) > 0:
+        # 汇总前日和昨日的国家数据
+        day_before_country_summary = summarize_by_group(day_before_country_records)
+        yesterday_country_summary = summarize_by_group(yesterday_country_records)
+
+        day_before_countries = day_before_country_summary["groups"]
+        yesterday_countries = yesterday_country_summary["groups"]
+
+        # 分析收入变化归因
+        income_changes = {}
+        for country_name in yesterday_countries:
+            day_before_income = day_before_countries.get(country_name, {}).get("income", 0)
+            yesterday_income = yesterday_countries.get(country_name, {}).get("income", 0)
+            income_change = yesterday_income - day_before_income
+            if abs(income_change) > 0:
+                income_changes[country_name] = income_change
+
+        # 找出收入变化最大的国家
+        if income_changes:
+            max_income_change_country = max(income_changes.items(), key=lambda x: abs(x[1]))
+            if abs(max_income_change_country[1]) > 0 and abs(max_income_change_country[1]) / abs(y_data['income'] - d_data['income']) > 0.3:
+                country_name = max_income_change_country[0]
+                change_amount = max_income_change_country[1]
+                contribution_pct = round(abs(change_amount) / abs(y_data['income'] - d_data['income']) * 100, 0) if abs(y_data['income'] - d_data['income']) > 0 else 0
+
+                if change_amount < 0:
+                    report_lines.append(f"- **收入下降{contribution_pct:.0f}%来自{country_name}**：该国家收入减少${abs(change_amount):,.2f}，占总收入下降的{contribution_pct:.0f}%")
+                else:
+                    report_lines.append(f"- **收入增长{contribution_pct:.0f}%来自{country_name}**：该国家收入增加${change_amount:,.2f}，占总收入增长的{contribution_pct:.0f}%")
+                has_reason = True
+
+    # 如果没有找到具体原因，删除这个部分
+    if not has_reason:
+        report_lines = report_lines[:-1]  # 删除"变化原因细拆："标题
 
     # 2. 渠道表现分析
     report_lines.append(f"\n### 2. 渠道表现分析（{yesterday_date}）")
