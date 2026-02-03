@@ -5,7 +5,7 @@
 import os
 import sys
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # 添加项目根目录到Python路径
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -22,10 +22,10 @@ def load_config():
     """
     workspace_path = os.getenv("COZE_WORKSPACE_PATH", "/workspace/projects")
     config_path = os.path.join(workspace_path, "scripts/daily_analysis_config.json")
-    
+
     if not os.path.exists(config_path):
         raise FileNotFoundError(f"配置文件不存在: {config_path}，请先创建该文件并配置参数")
-    
+
     with open(config_path, 'r', encoding='utf-8') as f:
         return json.load(f)
 
@@ -35,39 +35,59 @@ def run_daily_analysis():
     执行每日数据分析任务
     """
     print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 开始执行每日数据分析任务...")
-    
+
     try:
+        # ========== 日期校验流程 ==========
+        today = datetime.now()
+        yesterday = today - timedelta(days=1)
+
+        yesterday_str = yesterday.strftime('%Y-%m-%d')
+        today_str = today.strftime('%Y-%m-%d')
+
+        print(f"\n{'='*80}")
+        print(f"📅 日期校验信息")
+        print(f"{'='*80}")
+        print(f"  今天: {today_str}")
+        print(f"  昨天: {yesterday_str}")
+        print(f"{'='*80}\n")
+
+        print(f"  ✅ 将分析昨日（{yesterday_str}）的数据")
+
         # 加载配置
         config = load_config()
         app_token = config.get("app_token")
         table_id = config.get("table_id")
-        report_title = config.get("report_title", "每日数据分析报告")
+        # 在报告标题中添加日期
+        base_report_title = config.get("report_title", "每日数据分析报告")
+        report_title = f"{base_report_title} - {yesterday_str}"
         at_all = config.get("at_all", False)
         custom_prompt = config.get("custom_prompt", "")
-        
+
         if not app_token or not table_id:
             raise ValueError("配置文件中缺少 app_token 或 table_id")
-        
-        print(f"  - App Token: {app_token}")
+
+        print(f"\n  - App Token: {app_token}")
         print(f"  - Table ID: {table_id}")
         print(f"  - Report Title: {report_title}")
-        
+
         # 构建分析提示词
         base_prompt = f"""请帮我分析飞书多维表格中的业务数据，具体信息如下：
 - App Token: {app_token}
 - Table ID: {table_id}
+- 分析日期：{yesterday_str}（昨天的数据）
 
 请按照以下步骤进行分析：
 1. 先获取表格的字段信息，了解数据结构
-2. 获取表格的所有数据
-3. 分析数据的关键指标、趋势变化、异常点
-4. 生成一份结构化的分析报告，包含：
-   - 数据概览
-   - 关键指标分析
-   - 趋势分析
-   - 异常发现
+2. 获取表格的最近数据（建议获取最近200条，按日期降序排序）
+3. **重点分析**：从数据中找到日期为 {yesterday_str} 的所有记录，分析各渠道的DAU、新增、收入等关键指标
+4. **趋势对比**：对比前几天的数据（过去7天），识别趋势变化和异常点
+5. 生成一份结构化的分析报告，包含：
+   - 数据概览（昨日数据概要）
+   - 关键指标分析（各渠道DAU、新增、收入等）
+   - 趋势分析（与前几天对比）
+   - 异常发现（异常数据点）
    - 业务建议
-5. **重要**：使用 send_feishu_analysis_report 工具将分析报告发送到飞书群组
+6. **重要**：使用 send_feishu_analysis_report 工具将分析报告发送到飞书群组
    - 标题参数使用："{report_title}"
    - 根据分析结果填写 key_findings 和 recommendations
 
@@ -76,7 +96,8 @@ def run_daily_analysis():
 
 注意：
 - 必须调用 send_feishu_analysis_report 工具发送报告
-- 不要直接输出原始数据
+- 重点分析昨天的数据，也要对比历史趋势
+- 不要直接输出原始数据表格
 - 分析要基于实际获取的数据
 """
 
@@ -84,34 +105,34 @@ def run_daily_analysis():
             analysis_prompt = base_prompt + f"\n\n额外要求：\n{custom_prompt}"
         else:
             analysis_prompt = base_prompt
-        
+
         # 构建Agent
         print("  - 正在初始化Agent...")
         agent = build_agent()
-        
+
         # 发送分析任务
         print("  - 开始分析数据...")
         messages = [HumanMessage(content=analysis_prompt)]
-        
+
         # 配置 thread_id 用于 checkpointer
-        config = {
+        agent_config = {
             "configurable": {
                 "thread_id": f"daily_analysis_{datetime.now().strftime('%Y%m%d')}"
             }
         }
-        
+
         response = ""
-        for chunk in agent.stream({"messages": messages}, config):
+        for chunk in agent.stream({"messages": messages}, config=agent_config):
             if hasattr(chunk, 'content') and chunk.content:
                 if isinstance(chunk.content, str):
                     print(chunk.content, end="", flush=True)
                     response += chunk.content
-        
+
         print(f"\n\n[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 分析任务完成！")
         print("报告已自动发送到飞书群组。")
-        
+
         return True
-        
+
     except Exception as e:
         error_msg = f"执行失败: {str(e)}"
         print(f"\n[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {error_msg}")
