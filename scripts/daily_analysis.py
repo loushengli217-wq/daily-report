@@ -67,9 +67,17 @@ def run_daily_analysis():
    - 趋势分析
    - 异常发现
    - 业务建议
+5. **重要**：使用 send_feishu_analysis_report 工具将分析报告发送到飞书群组
+   - 标题参数使用："{report_title}"
+   - 根据分析结果填写 key_findings 和 recommendations
 
 报告标题：{report_title}
 报告格式：Markdown格式，要求简洁专业，突出重点
+
+注意：
+- 必须调用 send_feishu_analysis_report 工具发送报告
+- 不要直接输出原始数据
+- 分析要基于实际获取的数据
 """
 
         if custom_prompt:
