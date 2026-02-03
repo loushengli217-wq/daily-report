@@ -14,7 +14,7 @@ sys.path.insert(0, os.path.join(project_root, "src"))
 
 from agents.agent import build_agent
 from langchain_core.messages import HumanMessage
-from tools.feishu_bitable_tool import FeishuBitableClient, get_access_token
+from data_processor import DataProcessor
 
 
 def validate_and_get_data_info(app_token, table_id, target_date):
