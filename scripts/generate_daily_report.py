@@ -210,9 +210,7 @@ def generate_report(processor, table_configs):
     # 生成报告
     report_lines = []
 
-    report_lines.append("=" * 100)
     report_lines.append(f"《二重螺旋-海外》 - {yesterday_date} 日报")
-    report_lines.append("=" * 100)
 
     # 一、关键指标分析
     report_lines.append("\n## 一、关键指标分析")
@@ -238,6 +236,59 @@ def generate_report(processor, table_configs):
     report_lines.append(f"- 付费率：{format_change(y_data['paid_rate'], d_data['paid_rate'], '付费率', is_percentage=True)}")
     report_lines.append(f"- ARPU：{format_change(y_data['arpu'], d_data['arpu'], 'ARPU')}")
     report_lines.append(f"- ARPPU：{format_change(y_data['arppu'], d_data['arppu'], 'ARPPU')}")
+
+    # 数据变化分析和推测
+    report_lines.append(f"\n**数据变化分析和推测：**")
+
+    # DAU变化分析
+    if y_data['dau'] != d_data['dau']:
+        dau_change_pct = round((y_data['dau'] - d_data['dau']) / d_data['dau'] * 100, 2) if d_data['dau'] > 0 else 0
+        if abs(dau_change_pct) > 5:
+            if dau_change_pct > 0:
+                report_lines.append(f"- **DAU提升{abs(dau_change_pct):.1f}%**：推测可能因为近期推广活动效果显现、用户留存优化或周末效应带来活跃用户增长")
+            else:
+                report_lines.append(f"- **DAU下降{abs(dau_change_pct):.1f}%**：推测可能因为新增用户减少、用户流失增加或非工作日效应导致活跃用户下滑")
+
+    # 新增用户变化分析
+    if y_data['new_users'] != d_data['new_users']:
+        new_change_pct = round((y_data['new_users'] - d_data['new_users']) / d_data['new_users'] * 100, 2) if d_data['new_users'] > 0 else 0
+        if abs(new_change_pct) > 10:
+            if new_change_pct > 0:
+                report_lines.append(f"- **新增用户增长{abs(new_change_pct):.1f}%**：推测可能因为渠道投放增加、素材优化或营销活动带来新用户流入")
+            else:
+                report_lines.append(f"- **新增用户下降{abs(new_change_pct):.1f}%**：推测可能因为渠道投放减少、素材效果下降或市场竞争加剧导致新用户获取困难")
+
+    # 收入变化分析
+    if y_data['income'] != d_data['income']:
+        income_change_pct = round((y_data['income'] - d_data['income']) / d_data['income'] * 100, 2) if d_data['income'] > 0 else 0
+        if abs(income_change_pct) > 15:
+            if income_change_pct > 0:
+                report_lines.append(f"- **收入增长{abs(income_change_pct):.1f}%**：推测可能因为付费活动效果、新品上架或用户付费意愿增强")
+            else:
+                report_lines.append(f"- **收入下降{abs(income_change_pct):.1f}%**：推测可能因为付费活动结束、付费用户流失或付费意愿减弱")
+
+    # 付费用户数变化分析
+    if y_data['paid_users'] != d_data['paid_users']:
+        paid_change_pct = round((y_data['paid_users'] - d_data['paid_users']) / d_data['paid_users'] * 100, 2) if d_data['paid_users'] > 0 else 0
+        if abs(paid_change_pct) > 10:
+            if paid_change_pct > 0:
+                report_lines.append(f"- **付费用户增长{abs(paid_change_pct):.1f}%**：推测可能因为付费转化优化、付费吸引力提升或新用户付费转化加快")
+            else:
+                report_lines.append(f"- **付费用户下降{abs(paid_change_pct):.1f}%**：推测可能因为付费用户流失、付费吸引力下降或新用户付费转化放缓")
+
+    # 付费率变化分析
+    if abs(y_data['paid_rate'] - d_data['paid_rate']) > 0.5:
+        if y_data['paid_rate'] > d_data['paid_rate']:
+            report_lines.append(f"- **付费率提升**：付费转化效率提高，推测可能因为付费引导优化、付费点设计改进或用户付费意愿增强")
+        else:
+            report_lines.append(f"- **付费率下降**：付费转化效率降低，推测可能因为付费引导效果减弱、付费点设计问题或用户付费意愿下降")
+
+    # ARPPU变化分析
+    if abs(y_data['arppu'] - d_data['arppu']) > 2:
+        if y_data['arppu'] > d_data['arppu']:
+            report_lines.append(f"- **ARPPU提升**：付费用户平均付费增加，推测可能因为高价值付费增多、套餐优化或用户付费深度提升")
+        else:
+            report_lines.append(f"- **ARPPU下降**：付费用户平均付费减少，推测可能因为低价值付费增多、套餐吸引力下降或用户付费深度降低")
 
     # 2. 渠道表现分析
     report_lines.append(f"\n### 2. 渠道表现分析（{yesterday_date}）")
@@ -350,7 +401,7 @@ def generate_report(processor, table_configs):
         arppu_values.append(summary["total"]["arppu"])
 
     # 1. DAU趋势
-    report_lines.append("\n### 1. DAU趋势分析（最近7天）")
+    report_lines.append("\n### 1. DAU趋势分析")
     if len(dau_values) >= 2:
         dau_start = dau_values[0]
         dau_end = dau_values[-1]
@@ -366,15 +417,6 @@ def generate_report(processor, table_configs):
 
         report_lines.append(f"- **整体趋势**：从{dau_start:,}变化至{dau_end:,}，整体呈{trend_text}，{trend_desc}")
         report_lines.append(f"- **变化幅度**：7天内DAU变化{dau_change:,}，日均变化约{round(dau_change / len(dau_values), 0):,.0f}")
-
-        # 详细的每日变化分析
-        report_lines.append(f"- **详细变化**：")
-        for i in range(1, len(dau_values)):
-            daily_change = dau_values[i] - dau_values[i-1]
-            daily_change_pct = round((daily_change / dau_values[i-1]) * 100, 2) if dau_values[i-1] > 0 else 0
-            if abs(daily_change_pct) > 5:
-                status = "🔴 显著" if daily_change_pct < -5 else "🟢 显著"
-                report_lines.append(f"  - {recent_7_days[i]}：{dau_values[i]:,}，日环比{status}{daily_change_pct:+.2f}%")
 
     # 2. 新增用户趋势
     report_lines.append("\n### 2. 新增用户趋势分析")
@@ -596,8 +638,6 @@ def generate_report(processor, table_configs):
 
     for i, rec in enumerate(recommendations, 1):
         report_lines.append(f"{i}. {rec}")
-
-    report_lines.append("\n" + "=" * 100)
 
     return "\n".join(report_lines)
 
