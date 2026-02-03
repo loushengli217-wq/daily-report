@@ -127,23 +127,25 @@ class MultiTableDataProcessor:
         if not parsed_records:
             return {"error": f"表格 {table_id} 没有有效数据"}
 
-        # 按日期分组
+        # 获取最后N条记录（按原始顺序）
+        if last_n and len(parsed_records) >= last_n:
+            target_records = parsed_records[-last_n:]
+        else:
+            target_records = parsed_records
+
+        print(f"  获取最后 {len(target_records)} 条记录")
+
+        # 按日期分组（针对这N条记录）
         date_groups = defaultdict(list)
-        for rec in parsed_records:
+        for rec in target_records:
             date_groups[rec["date"]].append(rec)
 
         # 排序日期
         sorted_dates = sorted(date_groups.keys())
 
-        # 获取最后N天的数据
-        if last_n and len(sorted_dates) >= last_n:
-            target_dates = sorted_dates[-last_n:]
-        else:
-            target_dates = sorted_dates
-
         # 汇总数据
         daily_summary = {}
-        for date in target_dates:
+        for date in sorted_dates:
             records_for_date = date_groups[date]
 
             # 按分组汇总
@@ -186,13 +188,13 @@ class MultiTableDataProcessor:
             "table_id": table_id,
             "view_id": view_id,
             "total_records": len(parsed_records),
+            "analyzed_rows": len(target_records),
             "date_range": {
                 "start": sorted_dates[0],
                 "end": sorted_dates[-1],
                 "total_days": len(sorted_dates)
             },
-            "analysis_days": len(target_dates),
-            "target_dates": target_dates,
+            "target_dates": sorted_dates,
             "daily_summary": daily_summary
         }
 
@@ -216,8 +218,8 @@ def format_multi_table_data(results, table_configs):
 
         output.append(f"表格ID: {result['table_id']}")
         output.append(f"视图ID: {result['view_id']}")
-        output.append(f"数据范围: {result['date_range']['start']} 至 {result['date_range']['end']}")
-        output.append(f"分析天数: {result['analysis_days']}天")
+        output.append(f"数据范围: {result['date_range']['start']} 至 {result['date_range']['end']} ({result['date_range']['total_days']}天)")
+        output.append(f"分析行数: {result['analyzed_rows']}行")
 
         # 表格数据
         output.append(f"\n日期\t总DAU\t新增用户\t总收入\t付费率(%)")

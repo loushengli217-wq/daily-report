@@ -78,7 +78,7 @@ def run_daily_analysis():
             "name": "游戏基础数据",
             "table_id": "tblM5x1uyjwffoBq",
             "view_id": "vew8YRRC3u",
-            "last_n": 7  # 倒数7行（7天）
+            "last_n": 7  # 倒数7行
         },
         {
             "name": "游戏渠道数据",
@@ -124,7 +124,7 @@ def run_daily_analysis():
         if "date_range" in result:
             time_ranges.append(
                 f"{result['date_range']['start']} 至 {result['date_range']['end']} "
-                f"({result['analysis_days']}天)"
+                f"({result['date_range']['total_days']}天)"
             )
 
     # 构建Agent分析输入
@@ -132,9 +132,9 @@ def run_daily_analysis():
     agent_input = f"""请分析以下游戏数据，生成专业的数据分析报告：
 
 ## 数据来源
-1. 游戏基础数据 - 最近7天数据
-2. 游戏渠道数据 - 最近35天数据
-3. 游戏主要国家数据 - 最近28天数据
+1. 游戏基础数据 - 倒数7行数据
+2. 游戏渠道数据 - 倒数35行数据
+3. 游戏主要国家数据 - 倒数28行数据
 
 ## 实际数据
 

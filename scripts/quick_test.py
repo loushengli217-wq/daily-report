@@ -26,19 +26,19 @@ def quick_test():
             "name": "游戏基础数据",
             "table_id": "tblM5x1uyjwffoBq",
             "view_id": "vew8YRRC3u",
-            "last_n": 7
+            "last_n": 7  # 倒数7行
         },
         {
             "name": "游戏渠道数据",
             "table_id": "tblBiiYpOdRGonPy",
             "view_id": "vew8YRRC3u",
-            "last_n": 35
+            "last_n": 35  # 倒数35行
         },
         {
             "name": "游戏主要国家数据",
             "table_id": "tblgx4cY7LvncsiJ",
             "view_id": "vew8YRRC3u",
-            "last_n": 28
+            "last_n": 28  # 倒数28行
         }
     ]
 
@@ -58,8 +58,8 @@ def quick_test():
             print(f"  ❌ 错误: {result['error']}")
         else:
             print(f"  ✅ 成功: {result['total_records']} 条记录")
-            print(f"     时间范围: {result['date_range']['start']} 至 {result['date_range']['end']}")
-            print(f"     分析天数: {result['analysis_days']}天")
+            print(f"     时间范围: {result['date_range']['start']} 至 {result['date_range']['end']} ({result['date_range']['total_days']}天)")
+            print(f"     分析行数: {result['analyzed_rows']}行")
 
     # 格式化并输出摘要
     print("\n" + "=" * 80)
@@ -72,8 +72,8 @@ def quick_test():
 
         print(f"\n{i}. {config['name']}")
         print(f"   表格ID: {result['table_id']}")
-        print(f"   数据范围: {result['date_range']['start']} 至 {result['date_range']['end']}")
-        print(f"   分析天数: {result['analysis_days']}天")
+        print(f"   数据范围: {result['date_range']['start']} 至 {result['date_range']['end']} ({result['date_range']['total_days']}天)")
+        print(f"   分析行数: {result['analyzed_rows']}行")
 
         # 获取最新一天的数据
         latest_date = result['target_dates'][-1]
