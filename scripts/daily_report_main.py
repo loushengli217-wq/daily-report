@@ -10,8 +10,10 @@ from datetime import datetime
 from coze_workload_identity import Client
 
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+scripts_dir = os.path.join(project_root, "scripts")
 sys.path.insert(0, project_root)
 sys.path.insert(0, os.path.join(project_root, "src"))
+sys.path.insert(0, scripts_dir)
 
 from generate_daily_report import generate_report, MultiTableDataProcessor
 
