@@ -8,7 +8,9 @@ import json
 from datetime import datetime
 
 # 添加项目根目录到Python路径
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, project_root)
+sys.path.insert(0, os.path.join(project_root, "src"))
 
 from agents.agent import build_agent
 from langchain_core.messages import HumanMessage
@@ -83,8 +85,15 @@ def run_daily_analysis():
         print("  - 开始分析数据...")
         messages = [HumanMessage(content=analysis_prompt)]
         
+        # 配置 thread_id 用于 checkpointer
+        config = {
+            "configurable": {
+                "thread_id": f"daily_analysis_{datetime.now().strftime('%Y%m%d')}"
+            }
+        }
+        
         response = ""
-        for chunk in agent.stream({"messages": messages}):
+        for chunk in agent.stream({"messages": messages}, config):
             if hasattr(chunk, 'content') and chunk.content:
                 if isinstance(chunk.content, str):
                     print(chunk.content, end="", flush=True)
