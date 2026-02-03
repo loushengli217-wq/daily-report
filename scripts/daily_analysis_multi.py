@@ -12,6 +12,55 @@ sys.path.insert(0, os.path.join(project_root, "src"))
 
 from multi_table_processor import MultiTableDataProcessor, format_multi_table_data
 from src.agents.agent import build_agent
+import json
+from coze_workload_identity import Client
+import requests
+
+
+def send_to_feishu_report(title: str, markdown_content: str, at_all: bool = False) -> bool:
+    """发送报告到飞书群组"""
+    try:
+        client = Client()
+        credential = client.get_integration_credential("integration-feishu-message")
+        webhook_url = json.loads(credential)["webhook_url"]
+
+        # 构建交互式卡片
+        elements = [
+            {
+                "tag": "div",
+                "text": {
+                    "tag": "lark_md",
+                    "content": markdown_content
+                }
+            }
+        ]
+
+        payload = {
+            "msg_type": "interactive",
+            "card": {
+                "header": {
+                    "title": {
+                        "tag": "plain_text",
+                        "content": title
+                    }
+                },
+                "elements": elements
+            }
+        }
+
+        response = requests.post(webhook_url, json=payload)
+        result = response.json()
+
+        if result.get("code") == 0:
+            print("\n✅ 报告已成功发送到飞书群组！")
+            return True
+        else:
+            print(f"\n❌ 发送失败: {result}")
+            return False
+
+    except Exception as e:
+        print(f"\n❌ 发送报告到飞书失败: {str(e)}")
+        return False
 
 
 def run_daily_analysis():
@@ -131,6 +180,19 @@ def run_daily_analysis():
         print("=" * 80)
         print(analysis_report)
         print("\n" + "=" * 80)
+
+        # 发送到飞书群组
+        print("\n正在发送报告到飞书群组...")
+        send_success = send_to_feishu_report(
+            title=f"📊 游戏数据分析报告 - {datetime.now().strftime('%Y-%m-%d')}",
+            markdown_content=analysis_report,
+            at_all=False
+        )
+
+        if send_success:
+            print("\n✅ 分析完成！报告已发送到飞书群组。")
+        else:
+            print("\n✅ 分析完成！但发送到飞书群组失败。")
 
         return analysis_report
 
