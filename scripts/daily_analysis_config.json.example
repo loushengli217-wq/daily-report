@@ -1,0 +1,7 @@
+{
+  "app_token": "WQdQbJnm0aJswrsOfrYciaV0n1e",
+  "table_id": "tblenvHv3nU9sCfr",
+  "report_title": "每日销售数据分析报告",
+  "at_all": false,
+  "custom_prompt": "重点关注销售额的变化趋势和异常点，并给出提升销售的建议。"
+}
