@@ -2,7 +2,7 @@
 # 启动日报定时调度器（后台运行）
 
 # 设置自定义 Webhook URL
-export FEISHU_WEBHOOK_URL="https://open.feishu.cn/open-apis/bot/v2/hook/5d969aa6-d165-4dc0-9165-bf20fb2a13ee"
+export FEISHU_WEBHOOK_URL="https://open.feishu.cn/open-apis/bot/v2/hook/9d70437e-690c-4f96-8601-5b7058db0ebd"
 
 # 创建日志目录
 mkdir -p logs
