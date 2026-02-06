@@ -18,13 +18,8 @@ sys.path.insert(0, scripts_dir)
 from multi_table_processor import MultiTableDataProcessor
 
 
-def format_currency(value):
-    """格式化货币"""
-    return f"${value:,.2f}"
-
-
 def format_change(current, previous, is_percentage=False):
-    """格式化变化"""
+    """格式化变化（仅返回变化量和百分比）"""
     if previous == 0:
         if current == 0:
             return "0 (0%)"
@@ -38,11 +33,51 @@ def format_change(current, previous, is_percentage=False):
         change = round(change, 2)
 
     if change > 0:
-        return f"+{change:,} (+{change_pct:.1f}%)"
+        return f"+{change:,} (+{change_pct}%)"
     elif change < 0:
-        return f"{change:,} ({change_pct:.1f}%)"
+        return f"{change:,} ({change_pct}%)"
     else:
-        return f"0 (0%)"
+        return "0 (0%)"
+
+
+def format_change_with_values(current, previous, is_percentage=False, is_currency=False):
+    """格式化变化（显示前日值和昨日值的对比）"""
+    if previous == 0:
+        if current == 0:
+            return "0 → 0 (0, 0%)"
+        return f"0 → {format_value(current, is_percentage, is_currency)} (+{current:,}, 新增)"
+
+    change = current - previous
+    change_pct = round((change / previous) * 100, 2) if previous > 0 else 0
+
+    # 对变化值进行四舍五入
+    if isinstance(change, float):
+        change = round(change, 2)
+
+    prev_str = format_value(previous, is_percentage, is_currency)
+    curr_str = format_value(current, is_percentage, is_currency)
+
+    if change > 0:
+        return f"{prev_str} → {curr_str} (+{change:,}, +{change_pct}%)"
+    elif change < 0:
+        return f"{prev_str} → {curr_str} ({change:,}, {change_pct}%)"
+    else:
+        return f"{prev_str} → {curr_str} (0, 0%)"
+
+
+def format_value(value, is_percentage=False, is_currency=False):
+    """格式化数值"""
+    if is_percentage:
+        return f"{value:.2f}%"
+    elif is_currency:
+        return f"${value:,.2f}"
+    else:
+        return f"{value:,}"
+
+
+def format_currency(value):
+    """格式化货币"""
+    return f"${value:,.2f}"
 
 
 def get_date_summary(records, date_str, processor):
@@ -154,13 +189,13 @@ def generate_simple_report(processor, table_configs):
 
     report_lines.append("")
     report_lines.append(f"对照前日（{day_before_str}）变化：")
-    report_lines.append(f"- DAU：{format_change(y_dau, d_dau)}")
-    report_lines.append(f"- 新增用户：{format_change(y_base['new_users'], d_base['new_users'])}")
-    report_lines.append(f"- 总收入：{format_change(y_income, d_income)}")
-    report_lines.append(f"- 付费用户数：{format_change(y_paid, d_paid)}")
-    report_lines.append(f"- 付费率：{format_change(y_paid_rate, d_paid_rate)}")
-    report_lines.append(f"- ARPU：{format_change(y_arpu, d_arpu)}")
-    report_lines.append(f"- ARPPU：{format_change(y_arppu, d_arppu)}")
+    report_lines.append(f"- DAU：{format_change_with_values(y_dau, d_dau)}")
+    report_lines.append(f"- 新增用户：{format_change_with_values(y_base['new_users'], d_base['new_users'])}")
+    report_lines.append(f"- 总收入：{format_change_with_values(y_income, d_income, is_currency=True)}")
+    report_lines.append(f"- 付费用户数：{format_change_with_values(y_paid, d_paid)}")
+    report_lines.append(f"- 付费率：{format_change_with_values(y_paid_rate, d_paid_rate, is_percentage=True)}")
+    report_lines.append(f"- ARPU：{format_change_with_values(y_arpu, d_arpu, is_currency=True)}")
+    report_lines.append(f"- ARPPU：{format_change_with_values(y_arppu, d_arppu, is_currency=True)}")
 
     # 变化原因细拆
     report_lines.append("")
@@ -322,6 +357,9 @@ def main():
 
         # 发送到飞书
         print("\n正在发送报告到飞书群组...")
+        # 设置自定义 Webhook URL
+        import os
+        os.environ["FEISHU_WEBHOOK_URL"] = "https://open.feishu.cn/open-apis/bot/v2/hook/9d70437e-690c-4f96-8601-5b7058db0ebd"
         from daily_report_main import send_to_feishu
         send_to_feishu("🎮 二重螺旋-海外 数据日报", report)
 
