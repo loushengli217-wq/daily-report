@@ -4,10 +4,8 @@
 """
 import sys
 import os
-import json
 import requests
 from datetime import datetime
-from coze_workload_identity import Client
 
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 scripts_dir = os.path.join(project_root, "scripts")
@@ -21,14 +19,8 @@ from generate_daily_report import generate_report, MultiTableDataProcessor
 def send_to_feishu(title: str, markdown_content: str) -> bool:
     """发送报告到飞书群组"""
     try:
-        # 优先使用环境变量中的 webhook URL
-        webhook_url = os.getenv("FEISHU_WEBHOOK_URL")
-
-        # 如果环境变量不存在，则从集成服务获取
-        if not webhook_url:
-            client = Client()
-            credential = client.get_integration_credential("integration-feishu-message")
-            webhook_url = json.loads(credential)["webhook_url"]
+        # 强制使用新群的 Webhook URL
+        webhook_url = "https://open.feishu.cn/open-apis/bot/v2/hook/9d70437e-690c-4f96-8601-5b7058db0ebd"
 
         # 构建交互式卡片
         elements = [
