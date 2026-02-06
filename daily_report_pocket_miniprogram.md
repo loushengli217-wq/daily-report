@@ -15,9 +15,3 @@
 - 付费率：1.27% → 1.75% (<font color="red">0.48</font>, <font color="red">+37.8%</font>)
 - ARPU：0.84 → 1.39 (<font color="red">0.55</font>, <font color="red">+65.48%</font>)
 - ARPPU：66.0 → 79.55 (<font color="red">13.55</font>, <font color="red">+20.53%</font>)
-
-**变化原因细拆：**
-- 收入增长100%来自Total：该渠道收入增长¥232.00，占总收入增长的100%
-- DAU下降100%来自Total：该渠道DAU减少540，占总DAU下降的100%
-- 收入增长100%来自Total：该国家收入增长¥232.00，占总收入增长的100%
-- DAU下降100%来自Total：该国家DAU减少552，占总DAU下降的100%
