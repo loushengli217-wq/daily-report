@@ -14,7 +14,7 @@ import os
 # 添加项目根目录到 Python 路径
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from scripts.daily_report_main import main as run_daily_report
+from scripts.generate_simple_report import main as run_daily_report
 
 # 配置日志
 logging.basicConfig(
