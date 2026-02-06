@@ -19,8 +19,14 @@ from generate_daily_report import generate_report, MultiTableDataProcessor
 def send_to_feishu(title: str, markdown_content: str) -> bool:
     """发送报告到飞书群组"""
     try:
-        # 强制使用新群的 Webhook URL
-        webhook_url = "https://open.feishu.cn/open-apis/bot/v2/hook/9d70437e-690c-4f96-8601-5b7058db0ebd"
+        # 从环境变量获取 Webhook URL，如果没有则使用默认值
+        webhook_url = os.getenv("FEISHU_WEBHOOK_URL")
+        if not webhook_url:
+            # 默认使用二重螺旋群的 Webhook URL
+            webhook_url = "https://open.feishu.cn/open-apis/bot/v2/hook/9d70437e-690c-4f96-8601-5b7058db0ebd"
+            print(f"⚠️  未设置 FEISHU_WEBHOOK_URL 环境变量，使用默认 Webhook")
+
+        print(f"📤 使用 Webhook URL: {webhook_url[:50]}...")
 
         # 构建交互式卡片
         elements = [
