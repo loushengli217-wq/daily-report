@@ -322,22 +322,6 @@ def generate_simple_report(processor, table_configs):
             elif change_amount > 0:
                 report_lines.append(f"- DAU增长{contribution_pct:.0f}%来自{country_name}：该国家DAU增长{change_amount:,}，占总DAU增长的{contribution_pct:.0f}%")
 
-    # 检查收入下降是否超过30%，如果超过则报警
-    income_change_pct = round(((y_income - d_income) / d_income) * 100, 2) if d_income > 0 else 0
-    alert_user_id = os.getenv("ALERT_USER_ID", "")  # 从环境变量读取要@的用户ID
-
-    if income_change_pct < -30:
-        report_lines.append("")
-        report_lines.append("---")
-        report_lines.append("")
-        report_lines.append("🚨 **收入异常报警**")
-        report_lines.append("")
-        report_lines.append("**【请所有人注意】**")
-        report_lines.append(f"昨日收入较前日下降 **{abs(income_change_pct):.2f}%**，请及时关注！")
-        report_lines.append(f"前日收入：${d_income:,.2f}")
-        report_lines.append(f"昨日收入：${y_income:,.2f}")
-        report_lines.append(f"下降金额：${d_income - y_income:,.2f}")
-
     return "\n".join(report_lines)
 
 
