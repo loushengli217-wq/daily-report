@@ -40,7 +40,7 @@
     },
     "revenue": {
       "name": "收入",
-      "aliases": ["收入", "付费金额", "Revenue", "income", "revenue"],
+      "aliases": ["收入(美元)数字", "收入", "付费金额", "Revenue", "income", "revenue"],
       "format": "currency",
       "precision": 2
     },
