@@ -176,9 +176,7 @@ def generate_simple_report(processor, table_configs):
     # 生成报告
     report_lines = []
 
-    report_lines.append(f"🎮 二重螺旋-海外 数据日报")
-    report_lines.append("")
-    report_lines.append(f"昨日（{yesterday_str}）总览数据")
+    report_lines.append(f"**昨日（{yesterday_str}）总览数据**")
     report_lines.append(f"- DAU：{y_dau:,}")
     report_lines.append(f"- 新增用户：{y_base['new_users']:,}")
     report_lines.append(f"- 总收入：{format_currency(y_income)}")
