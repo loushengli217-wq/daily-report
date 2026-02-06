@@ -27,7 +27,7 @@ echo $! > scheduler.pid
 
 echo "✅ 调度器已启动（PID: $!）"
 echo "📝 日志文件: logs/scheduler.log"
-echo "⏰ 调度规则: 每天上午 10:01 执行"
+echo "⏰ 调度规则: 每天下午 17:10 执行"
 echo "🔗 Webhook: ${FEISHU_WEBHOOK_URL:0:50}..."
 echo ""
 echo "查看日志: tail -f logs/scheduler.log"
