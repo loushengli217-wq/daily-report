@@ -95,6 +95,89 @@ class ConfigurableReportGenerator:
         else:
             return f"{prev_str} → {curr_str} (0, 0%)"
 
+    def _parse_record(self, record, table_type="base"):
+        """解析单条记录（支持配置化字段名）"""
+        fields_data = record.get("fields", {})
+
+        # 解析日期
+        date_value = fields_data.get("日期")
+        if isinstance(date_value, (int, float)):
+            date_str = datetime.fromtimestamp(date_value / 1000).strftime('%Y-%m-%d')
+        else:
+            return None
+
+        # 解析分组字段（基础数据/渠道/国家）
+        group_value = fields_data.get("渠道/国家") or fields_data.get("分组")
+        if isinstance(group_value, list) and len(group_value) > 0:
+            if isinstance(group_value[0], dict):
+                group = group_value[0].get('text', 'Total')
+            else:
+                group = str(group_value[0])
+        else:
+            group = 'Total'
+
+        # 根据配置解析字段
+        # DAU
+        dau_field = self.fields_config.get("dau", {}).get("aliases", ["DAU"])
+        dau = 0
+        for field_name in dau_field:
+            dau_value = fields_data.get(field_name)
+            if dau_value is not None:
+                if isinstance(dau_value, (int, float)):
+                    dau = int(dau_value)
+                elif isinstance(dau_value, dict) and 'value' in dau_value:
+                    val = dau_value['value']
+                    dau = int(val[0]) if isinstance(val, list) and len(val) > 0 else int(val)
+                break
+
+        # 新增
+        new_field = self.fields_config.get("new_users", {}).get("aliases", ["新增", "新增角色"])
+        new_users = 0
+        for field_name in new_field:
+            new_value = fields_data.get(field_name)
+            if new_value is not None:
+                if isinstance(new_value, (int, float)):
+                    new_users = int(new_value)
+                elif isinstance(new_value, dict) and 'value' in new_value:
+                    val = new_value['value']
+                    new_users = int(val[0]) if isinstance(val, list) and len(val) > 0 else int(val)
+                break
+
+        # 收入/付费金额
+        income_field = self.fields_config.get("revenue", {}).get("aliases", ["收入(美元)数字", "付费金额"])
+        income = 0.0
+        for field_name in income_field:
+            income_value = fields_data.get(field_name)
+            if income_value is not None:
+                if isinstance(income_value, (int, float)):
+                    income = float(income_value)
+                elif isinstance(income_value, dict) and 'value' in income_value:
+                    val = income_value['value']
+                    income = float(val[0]) if isinstance(val, list) and len(val) > 0 else float(val)
+                break
+
+        # 付费用户/付费人数
+        paid_field = self.fields_config.get("paid_users", {}).get("aliases", ["付费用户", "付费人数"])
+        paid_users = 0
+        for field_name in paid_field:
+            paid_value = fields_data.get(field_name)
+            if paid_value is not None:
+                if isinstance(paid_value, (int, float)):
+                    paid_users = int(paid_value)
+                elif isinstance(paid_value, dict) and 'value' in paid_value:
+                    val = paid_value['value']
+                    paid_users = int(val[0]) if isinstance(val, list) and len(val) > 0 else int(val)
+                break
+
+        return {
+            "date": date_str,
+            "group": group,
+            "dau": dau,
+            "new_users": new_users,
+            "income": income,
+            "paid_users": paid_users
+        }
+
     def _get_date_summary(self, records, date_str):
         """获取指定日期的汇总数据"""
         if not records:
@@ -102,7 +185,7 @@ class ConfigurableReportGenerator:
 
         total = {'dau': 0, 'new_users': 0, 'income': 0, 'paid_users': 0}
         for record in records:
-            parsed = self.processor.parse_record(record)
+            parsed = self._parse_record(record)
             if parsed and parsed.get('date') == date_str:
                 total['dau'] += parsed.get('dau', 0)
                 total['new_users'] += parsed.get('new_users', 0)
@@ -118,7 +201,7 @@ class ConfigurableReportGenerator:
 
         groups = defaultdict(lambda: {'dau': 0, 'new_users': 0, 'income': 0, 'paid_users': 0})
         for record in records:
-            parsed = self.processor.parse_record(record)
+            parsed = self._parse_record(record)
             if parsed and parsed.get('date') == date_str:
                 group = parsed.get('group', '未知')
                 groups[group]['dau'] += parsed.get('dau', 0)
