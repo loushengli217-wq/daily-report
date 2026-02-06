@@ -6,7 +6,8 @@
   "report": {
     "title_template": "{project_name} - {date} 日报",
     "schedule_time": "10:01",
-    "currency_symbol": "¥"
+    "currency_symbol": "¥",
+    "include_reason_analysis": false
   },
 
   "feishu": {

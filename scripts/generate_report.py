@@ -312,6 +312,136 @@ class ConfigurableReportGenerator:
         report_lines.append(f"- {field_names.get('arpu', 'ARPU')}：{self._format_change_with_values(y_arpu, d_arpu, is_currency=True)}")
         report_lines.append(f"- {field_names.get('arppu', 'ARPPU')}：{self._format_change_with_values(y_arppu, d_arppu, is_currency=True)}")
 
+        # 变化原因细拆（根据配置决定是否包含）
+        include_reason_analysis = self.report_config.get("include_reason_analysis", False)
+
+        if include_reason_analysis:
+            report_lines.append("")
+            report_lines.append("**变化原因细拆：**")
+
+            # 分析渠道数据
+            y_channel = self._get_date_groups(channel_records, yesterday_str)
+            d_channel = self._get_date_groups(channel_records, day_before_str)
+
+            # 收入变化归因
+            income_changes = {}
+            for channel_name in y_channel:
+                y_income = y_channel[channel_name]['income']
+                d_income = d_channel.get(channel_name, {}).get('income', 0)
+                income_change = y_income - d_income
+                if abs(income_change) > 0:
+                    income_changes[channel_name] = income_change
+
+            # 使用渠道数据表中的总收入变化
+            channel_y_income = sum(data['income'] for data in y_channel.values())
+            channel_d_income = sum(data['income'] for data in d_channel.values())
+            channel_income_change = channel_y_income - channel_d_income
+
+            if income_changes and abs(channel_income_change) > 0:
+                # 过滤掉"其他"分类，优先选择具体的渠道
+                specific_changes = {k: v for k, v in income_changes.items() if k != "其他"}
+                if not specific_changes:
+                    specific_changes = income_changes
+
+                max_income_change = max(specific_changes.items(), key=lambda x: abs(x[1]))
+                contribution_pct = round(abs(max_income_change[1]) / abs(channel_income_change) * 100, 0)
+                if contribution_pct > 10:
+                    channel_name = max_income_change[0]
+                    change_amount = max_income_change[1]
+                    if change_amount < 0:
+                        report_lines.append(f"- 收入下降{contribution_pct:.0f}%来自{channel_name}：该渠道收入减少{self._format_currency(abs(change_amount))}，占总收入下降的{contribution_pct:.0f}%")
+                    elif change_amount > 0:
+                        report_lines.append(f"- 收入增长{contribution_pct:.0f}%来自{channel_name}：该渠道收入增长{self._format_currency(change_amount)}，占总收入增长的{contribution_pct:.0f}%")
+
+            # DAU变化归因
+            dau_changes = {}
+            for channel_name in y_channel:
+                y_dau = y_channel[channel_name]['dau']
+                d_dau = d_channel.get(channel_name, {}).get('dau', 0)
+                dau_change = y_dau - d_dau
+                if abs(dau_change) > 0:
+                    dau_changes[channel_name] = dau_change
+
+            # 使用渠道数据表中的总DAU变化
+            channel_y_dau = sum(data['dau'] for data in y_channel.values())
+            channel_d_dau = sum(data['dau'] for data in d_channel.values())
+            channel_dau_change = channel_y_dau - channel_d_dau
+
+            if dau_changes and abs(channel_dau_change) > 0:
+                max_dau_change = max(dau_changes.items(), key=lambda x: abs(x[1]))
+                contribution_pct = round(abs(max_dau_change[1]) / abs(channel_dau_change) * 100, 0)
+                if contribution_pct > 10:
+                    channel_name = max_dau_change[0]
+                    change_amount = max_dau_change[1]
+                    if change_amount < 0:
+                        report_lines.append(f"- DAU下降{contribution_pct:.0f}%来自{channel_name}：该渠道DAU减少{abs(change_amount):,}，占总DAU下降的{contribution_pct:.0f}%")
+                    elif change_amount > 0:
+                        report_lines.append(f"- DAU增长{contribution_pct:.0f}%来自{channel_name}：该渠道DAU增长{change_amount:,}，占总DAU增长的{contribution_pct:.0f}%")
+
+            # 分析国家数据
+            y_country = self._get_date_groups(country_records, yesterday_str)
+            d_country = self._get_date_groups(country_records, day_before_str)
+
+            # 收入变化归因
+            country_income_changes = {}
+            for country_name in y_country:
+                y_income = y_country[country_name]['income']
+                d_income = d_country.get(country_name, {}).get('income', 0)
+                income_change = y_income - d_income
+                if abs(income_change) > 0:
+                    country_income_changes[country_name] = income_change
+
+            # 使用国家数据表中的总收入变化（排除"其他"分类）
+            specific_y_income = sum(data['income'] for name, data in y_country.items() if name != "其他")
+            specific_d_income = sum(data['income'] for name, data in d_country.items() if name != "其他")
+            country_income_change = specific_y_income - specific_d_income
+
+            if country_income_changes and abs(country_income_change) > 0:
+                # 过滤掉"其他"分类，优先选择具体的渠道
+                specific_changes = {k: v for k, v in country_income_changes.items() if k != "其他"}
+                if not specific_changes:
+                    specific_changes = country_income_changes
+
+                max_income_change = max(specific_changes.items(), key=lambda x: abs(x[1]))
+                contribution_pct = round(abs(max_income_change[1]) / abs(country_income_change) * 100, 0)
+                if contribution_pct > 10:
+                    country_name = max_income_change[0]
+                    change_amount = max_income_change[1]
+                    if change_amount < 0:
+                        report_lines.append(f"- 收入下降{contribution_pct:.0f}%来自{country_name}：该国家收入减少{self._format_currency(abs(change_amount))}，占总收入下降的{contribution_pct:.0f}%")
+                    elif change_amount > 0:
+                        report_lines.append(f"- 收入增长{contribution_pct:.0f}%来自{country_name}：该国家收入增长{self._format_currency(change_amount)}，占总收入增长的{contribution_pct:.0f}%")
+
+            # DAU变化归因
+            country_dau_changes = {}
+            for country_name in y_country:
+                y_dau = y_country[country_name]['dau']
+                d_dau = d_country.get(country_name, {}).get('dau', 0)
+                dau_change = y_dau - d_dau
+                if abs(dau_change) > 0:
+                    country_dau_changes[country_name] = dau_change
+
+            # 使用国家数据表中的总DAU变化（排除"其他"分类）
+            specific_y_dau = sum(data['dau'] for name, data in y_country.items() if name != "其他")
+            specific_d_dau = sum(data['dau'] for name, data in d_country.items() if name != "其他")
+            country_dau_change = specific_y_dau - specific_d_dau
+
+            if country_dau_changes and abs(country_dau_change) > 0:
+                # 过滤掉"其他"分类，优先选择具体的渠道
+                specific_changes = {k: v for k, v in country_dau_changes.items() if k != "其他"}
+                if not specific_changes:
+                    specific_changes = country_dau_changes
+
+                max_dau_change = max(specific_changes.items(), key=lambda x: abs(x[1]))
+                contribution_pct = round(abs(max_dau_change[1]) / abs(country_dau_change) * 100, 0)
+                if contribution_pct > 10:
+                    country_name = max_dau_change[0]
+                    change_amount = max_dau_change[1]
+                    if change_amount < 0:
+                        report_lines.append(f"- DAU下降{contribution_pct:.0f}%来自{country_name}：该国家DAU减少{abs(change_amount):,}，占总DAU下降的{contribution_pct:.0f}%")
+                    elif change_amount > 0:
+                        report_lines.append(f"- DAU增长{contribution_pct:.0f}%来自{country_name}：该国家DAU增长{change_amount:,}，占总DAU增长的{contribution_pct:.0f}%")
+
         return "\n".join(report_lines)
 
     def generate_and_send(self):
