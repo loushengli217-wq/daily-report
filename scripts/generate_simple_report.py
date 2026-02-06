@@ -57,10 +57,20 @@ def format_change_with_values(current, previous, is_percentage=False, is_currenc
     prev_str = format_value(previous, is_percentage, is_currency)
     curr_str = format_value(current, is_percentage, is_currency)
 
+    # 添加颜色标记：负数为绿色，正数为红色
+    change_str = f"{change:,}"
+    change_pct_str = f"{change_pct}%"
+
     if change > 0:
-        return f"{prev_str} → {curr_str} (+{change:,}, +{change_pct}%)"
+        # 正数用红色
+        change_str = f'<font color="red">{change_str}</font>'
+        change_pct_str = f'<font color="red">+{change_pct_str}</font>'
+        return f"{prev_str} → {curr_str} ({change_str}, {change_pct_str})"
     elif change < 0:
-        return f"{prev_str} → {curr_str} ({change:,}, {change_pct}%)"
+        # 负数用绿色
+        change_str = f'<font color="green">{change_str}</font>'
+        change_pct_str = f'<font color="green">{change_pct_str}</font>'
+        return f"{prev_str} → {curr_str} ({change_str}, {change_pct_str})"
     else:
         return f"{prev_str} → {curr_str} (0, 0%)"
 
@@ -186,7 +196,7 @@ def generate_simple_report(processor, table_configs):
     report_lines.append(f"- ARPPU：{format_currency(y_arppu)}")
 
     report_lines.append("")
-    report_lines.append(f"对照前日（{day_before_str}）变化：")
+    report_lines.append(f"**对照前日（{day_before_str}）变化：**")
     report_lines.append(f"- DAU：{format_change_with_values(y_dau, d_dau)}")
     report_lines.append(f"- 新增用户：{format_change_with_values(y_base['new_users'], d_base['new_users'])}")
     report_lines.append(f"- 总收入：{format_change_with_values(y_income, d_income, is_currency=True)}")
