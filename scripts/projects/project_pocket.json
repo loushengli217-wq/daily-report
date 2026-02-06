@@ -1,0 +1,83 @@
+{
+  "project_id": "pocket_miniprogram",
+  "project_name": "Pocket - 小程序",
+  "description": "小程序抓宠RPG游戏",
+
+  "report": {
+    "title_template": "{project_name} - {date} 日报",
+    "schedule_time": "10:01",
+    "currency_symbol": "¥"
+  },
+
+  "feishu": {
+    "app_token": "OUvQwQM1piN3L5kGeN2c7njCnne",
+    "table_id": "tblFh4Y0RMyd198t",
+    "webhook_url": "https://open.feishu.cn/open-apis/bot/v2/hook/002e0a6c-6465-4faa-bce4-e3311406a876",
+    "tables": {
+      "base": {
+        "name": "基础数据总览",
+        "table_id": "tblFh4Y0RMyd198t",
+        "view_id": "vewmziHJQQ"
+      },
+      "channel": {
+        "name": "基础数据-渠道",
+        "table_id": "tbllGpdgT6h2mg4a",
+        "view_id": "vewPEN3Qct"
+      },
+      "country": {
+        "name": "基础数据-媒体渠道",
+        "table_id": "tblW5q8A62a179Jm",
+        "view_id": "vewPEN3Qct"
+      }
+    }
+  },
+
+  "fields": {
+    "date": {
+      "name": "日期",
+      "aliases": ["日期", "Date", "统计日期", "date"]
+    },
+    "revenue": {
+      "name": "付费金额",
+      "aliases": ["付费金额", "收入", "Revenue", "income", "revenue"],
+      "format": "currency",
+      "precision": 2
+    },
+    "dau": {
+      "name": "DAU",
+      "aliases": ["DAU", "日活", "活跃用户数", "dau"],
+      "format": "number",
+      "precision": 0
+    },
+    "new_users": {
+      "name": "新增角色",
+      "aliases": ["新增", "新增角色", "New Users", "new_users"],
+      "format": "number",
+      "precision": 0
+    },
+    "paid_users": {
+      "name": "付费人数",
+      "aliases": ["付费人数", "付费用户", "Paid Users", "paid_users"],
+      "format": "number",
+      "precision": 0
+    },
+    "arpu": {
+      "name": "ARPU",
+      "aliases": ["ARPU", "arpu", "人均付费"],
+      "format": "currency",
+      "precision": 2
+    },
+    "arppu": {
+      "name": "ARPPU",
+      "aliases": ["ARPPU", "arppu", "付费用户人均"],
+      "format": "currency",
+      "precision": 2
+    }
+  },
+
+  "terminology": {
+    "industry_terms": ["小程序", "微信", "抓宠", "RPG", "游戏"],
+    "increase_reasons": ["活动推广", "自然增长", "版本更新", "节假日效应", "小程序分享增长"],
+    "decrease_reasons": ["周末效应", "服务器问题", "竞品影响", "版本问题", "小程序访问受限"]
+  }
+}

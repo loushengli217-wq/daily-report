@@ -1,0 +1,83 @@
+{
+  "project_id": "your_project_id",
+  "project_name": "项目名称",
+  "description": "项目描述",
+
+  "report": {
+    "title_template": "{project_name} - {date} 日报",
+    "schedule_time": "10:01",
+    "currency_symbol": "$"
+  },
+
+  "feishu": {
+    "app_token": "your_app_token",
+    "table_id": "your_base_table_id",
+    "webhook_url": "your_webhook_url",
+    "tables": {
+      "base": {
+        "name": "基础数据总览",
+        "table_id": "your_table_id",
+        "view_id": "your_view_id"
+      },
+      "channel": {
+        "name": "基础数据-渠道",
+        "table_id": "your_table_id",
+        "view_id": "your_view_id"
+      },
+      "country": {
+        "name": "基础数据-媒体渠道",
+        "table_id": "your_table_id",
+        "view_id": "your_view_id"
+      }
+    }
+  },
+
+  "fields": {
+    "date": {
+      "name": "日期",
+      "aliases": ["日期", "Date", "统计日期", "date"]
+    },
+    "revenue": {
+      "name": "付费金额",
+      "aliases": ["付费金额", "收入", "Revenue", "income", "revenue"],
+      "format": "currency",
+      "precision": 2
+    },
+    "dau": {
+      "name": "DAU",
+      "aliases": ["DAU", "日活", "活跃用户数", "dau"],
+      "format": "number",
+      "precision": 0
+    },
+    "new_users": {
+      "name": "新增角色",
+      "aliases": ["新增", "新增角色", "New Users", "new_users"],
+      "format": "number",
+      "precision": 0
+    },
+    "paid_users": {
+      "name": "付费人数",
+      "aliases": ["付费人数", "付费用户", "Paid Users", "paid_users"],
+      "format": "number",
+      "precision": 0
+    },
+    "arpu": {
+      "name": "ARPU",
+      "aliases": ["ARPU", "arpu", "人均付费"],
+      "format": "currency",
+      "precision": 2
+    },
+    "arppu": {
+      "name": "ARPPU",
+      "aliases": ["ARPPU", "arppu", "付费用户人均"],
+      "format": "currency",
+      "precision": 2
+    }
+  },
+
+  "terminology": {
+    "industry_terms": ["游戏", "用户", "收入"],
+    "increase_reasons": ["活动推广", "自然增长", "版本更新", "节假日效应"],
+    "decrease_reasons": ["周末效应", "服务器问题", "竞品影响", "版本问题"]
+  }
+}

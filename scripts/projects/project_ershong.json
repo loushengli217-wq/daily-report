@@ -1,0 +1,83 @@
+{
+  "project_id": "ershong_helix_overseas",
+  "project_name": "二重螺旋-海外",
+  "description": "海外游戏项目",
+
+  "report": {
+    "title_template": "{project_name} - {date} 日报",
+    "schedule_time": "10:01",
+    "currency_symbol": "$"
+  },
+
+  "feishu": {
+    "app_token": "LvSAboJTJanJKdssWs8cm49vn8c",
+    "table_id": "tblM5x1uyjwffoBq",
+    "webhook_url": "https://open.feishu.cn/open-apis/bot/v2/hook/9d70437e-690c-4f96-8601-5b7058db0ebd",
+    "tables": {
+      "base": {
+        "name": "游戏基础数据",
+        "table_id": "tblM5x1uyjwffoBq",
+        "view_id": "vew8YRRC3u"
+      },
+      "channel": {
+        "name": "游戏渠道数据",
+        "table_id": "tblBiiYpOdRGonPy",
+        "view_id": "vew8YRRC3u"
+      },
+      "country": {
+        "name": "游戏主要国家数据",
+        "table_id": "tblgx4cY7LvncsiJ",
+        "view_id": "vew8YRRC3u"
+      }
+    }
+  },
+
+  "fields": {
+    "date": {
+      "name": "日期",
+      "aliases": ["日期", "Date", "统计日期", "date"]
+    },
+    "revenue": {
+      "name": "收入",
+      "aliases": ["收入", "付费金额", "Revenue", "income", "revenue"],
+      "format": "currency",
+      "precision": 2
+    },
+    "dau": {
+      "name": "DAU",
+      "aliases": ["DAU", "日活", "活跃用户数", "dau"],
+      "format": "number",
+      "precision": 0
+    },
+    "new_users": {
+      "name": "新增用户",
+      "aliases": ["新增", "新增用户", "New Users", "new_users"],
+      "format": "number",
+      "precision": 0
+    },
+    "paid_users": {
+      "name": "付费用户数",
+      "aliases": ["付费人数", "付费用户", "Paid Users", "paid_users"],
+      "format": "number",
+      "precision": 0
+    },
+    "arpu": {
+      "name": "ARPU",
+      "aliases": ["ARPU", "arpu", "人均付费"],
+      "format": "currency",
+      "precision": 2
+    },
+    "arppu": {
+      "name": "ARPPU",
+      "aliases": ["ARPPU", "arppu", "付费用户人均"],
+      "format": "currency",
+      "precision": 2
+    }
+  },
+
+  "terminology": {
+    "industry_terms": ["游戏", "用户", "收入", "海外", "运营"],
+    "increase_reasons": ["活动推广", "自然增长", "版本更新", "节假日效应"],
+    "decrease_reasons": ["周末效应", "服务器问题", "竞品影响", "版本问题"]
+  }
+}
