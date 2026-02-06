@@ -197,7 +197,7 @@ def generate_simple_report(processor, table_configs):
 
     # 变化原因细拆
     report_lines.append("")
-    report_lines.append("变化原因细拆：")
+    report_lines.append("**变化原因细拆：**")
 
     # 分析渠道数据
     y_channel = get_date_groups(channel_records, yesterday_str, processor)
@@ -321,6 +321,28 @@ def generate_simple_report(processor, table_configs):
                 report_lines.append(f"- DAU下降{contribution_pct:.0f}%来自{country_name}：该国家DAU减少{abs(change_amount):,}，占总DAU下降的{contribution_pct:.0f}%")
             elif change_amount > 0:
                 report_lines.append(f"- DAU增长{contribution_pct:.0f}%来自{country_name}：该国家DAU增长{change_amount:,}，占总DAU增长的{contribution_pct:.0f}%")
+
+    # 检查收入下降是否超过30%，如果超过则报警
+    income_change_pct = round(((y_income - d_income) / d_income) * 100, 2) if d_income > 0 else 0
+    alert_user_id = os.getenv("ALERT_USER_ID", "")  # 从环境变量读取要@的用户ID
+
+    if income_change_pct < -30:
+        report_lines.append("")
+        report_lines.append("---")
+        report_lines.append("")
+        report_lines.append("⚠️ **收入异常报警**")
+
+        if alert_user_id:
+            # @特定用户
+            report_lines.append(f"<at user_id=\"{alert_user_id}\">@相关同学</at> 请注意！")
+        else:
+            # 如果没有配置用户ID，则@所有人
+            report_lines.append("<at user_id=\"all\">@所有人</at> 请注意！")
+
+        report_lines.append(f"昨日收入较前日下降 **{abs(income_change_pct):.2f}%**，请及时关注！")
+        report_lines.append(f"前日收入：${d_income:,.2f}")
+        report_lines.append(f"昨日收入：${y_income:,.2f}")
+        report_lines.append(f"下降金额：${d_income - y_income:,.2f}")
 
     return "\n".join(report_lines)
 

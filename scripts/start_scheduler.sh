@@ -4,6 +4,10 @@
 # 设置自定义 Webhook URL
 export FEISHU_WEBHOOK_URL="https://open.feishu.cn/open-apis/bot/v2/hook/9d70437e-690c-4f96-8601-5b7058db0ebd"
 
+# 设置收入异常报警要@的用户ID（留空则@所有人）
+# 获取方式：在飞书群组中，点击要@的人的个人信息，查看其 User ID
+export ALERT_USER_ID=""
+
 # 创建日志目录
 mkdir -p logs
 
