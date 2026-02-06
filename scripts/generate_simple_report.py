@@ -330,15 +330,9 @@ def generate_simple_report(processor, table_configs):
         report_lines.append("")
         report_lines.append("---")
         report_lines.append("")
-        report_lines.append("⚠️ **收入异常报警**")
-
-        if alert_user_id:
-            # @特定用户
-            report_lines.append(f"<at user_id=\"{alert_user_id}\">@相关同学</at> 请注意！")
-        else:
-            # 如果没有配置用户ID，则@所有人
-            report_lines.append("<at user_id=\"all\">所有人</at> 请注意！")
-
+        report_lines.append("🚨 **收入异常报警**")
+        report_lines.append("")
+        report_lines.append("**【请所有人注意】**")
         report_lines.append(f"昨日收入较前日下降 **{abs(income_change_pct):.2f}%**，请及时关注！")
         report_lines.append(f"前日收入：${d_income:,.2f}")
         report_lines.append(f"昨日收入：${y_income:,.2f}")
