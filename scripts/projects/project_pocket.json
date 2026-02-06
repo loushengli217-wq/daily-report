@@ -10,7 +10,7 @@
   },
 
   "feishu": {
-    "app_token": "OUvQwQM1piN3L5kGeN2c7njCnne",
+    "app_token": "TmSCbqGjsaMy0csCmiocXsKjnJg",
     "table_id": "tblFh4Y0RMyd198t",
     "webhook_url": "https://open.feishu.cn/open-apis/bot/v2/hook/002e0a6c-6465-4faa-bce4-e3311406a876",
     "tables": {
