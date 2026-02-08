@@ -1,0 +1,20 @@
+2026-02-08 15:22:35,354 - __main__ - INFO - ================================================================================
+2026-02-08 15:22:35,354 - __main__ - INFO - 启动日报服务（APScheduler 版本）
+2026-02-08 15:22:35,355 - __main__ - INFO - ================================================================================
+2026-02-08 15:22:35,355 - __main__ - INFO - 服务 PID: 243
+2026-02-08 15:22:35,355 - __main__ - INFO - 启动时间: 2026-02-08 15:22:35
+2026-02-08 15:22:35,356 - __main__ - INFO - ✅ 加载项目: 二重螺旋-海外 - 10:01
+2026-02-08 15:22:35,357 - __main__ - INFO - ✅ 加载项目: Pocket - 小程序 - 10:01
+2026-02-08 15:22:35,358 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-08 15:22:35,358 - __main__ - INFO - 📅 二重螺旋-海外 已设置为每天 10:01 执行
+2026-02-08 15:22:35,359 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-08 15:22:35,359 - __main__ - INFO - 📅 Pocket - 小程序 已设置为每天 10:01 执行
+2026-02-08 15:22:35,360 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-02-08 15:22:35,360 - __main__ - INFO - ================================================================================
+2026-02-08 15:22:35,361 - __main__ - INFO - 服务已启动，等待定时任务执行...
+2026-02-08 15:22:35,361 - __main__ - INFO - 按 Ctrl+C 停止服务
+2026-02-08 15:22:35,361 - __main__ - INFO - ================================================================================
+2026-02-08 15:22:35,363 - apscheduler.scheduler - INFO - Added job "二重螺旋-海外" to job store "default"
+2026-02-08 15:22:35,363 - apscheduler.scheduler - INFO - Added job "Pocket - 小程序" to job store "default"
+2026-02-08 15:22:35,364 - apscheduler.scheduler - INFO - Added job "main.<locals>.<lambda>" to job store "default"
+2026-02-08 15:22:35,364 - apscheduler.scheduler - INFO - Scheduler started
