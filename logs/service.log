@@ -18,3 +18,7 @@
 2026-02-08 15:22:35,363 - apscheduler.scheduler - INFO - Added job "Pocket - 小程序" to job store "default"
 2026-02-08 15:22:35,364 - apscheduler.scheduler - INFO - Added job "main.<locals>.<lambda>" to job store "default"
 2026-02-08 15:22:35,364 - apscheduler.scheduler - INFO - Scheduler started
+2026-02-08 16:00:00,000 - apscheduler.executors.default - INFO - Running job "main.<locals>.<lambda> (trigger: cron[minute='0'], next run at: 2026-02-08 16:00:00 CST)" (scheduled at 2026-02-08 16:00:00+08:00)
+2026-02-08 16:00:00,002 - __main__ - INFO - 💓 服务健康检查：正常运行中
+2026-02-08 16:00:00,003 - apscheduler.executors.default - INFO - Job "main.<locals>.<lambda> (trigger: cron[minute='0'], next run at: 2026-02-08 17:00:00 CST)" executed successfully
+2026-02-08 16:00:00,004 - __main__ - INFO - 任务执行成功: health_check
