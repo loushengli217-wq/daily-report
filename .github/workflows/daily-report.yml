@@ -1,9 +1,9 @@
 name: Daily Report Generator
 
 on:
-  # 每天北京时间 10:01 触发（UTC 02:01）
+  # 每天北京时间 10:05 触发（UTC 02:05）
   schedule:
-    - cron: '1 2 * * *'
+    - cron: '5 2 * * *'
 
   # 也支持手动触发
   workflow_dispatch:
