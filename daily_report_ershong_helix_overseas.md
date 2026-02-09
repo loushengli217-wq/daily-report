@@ -1,23 +1,23 @@
-**昨日（2026-02-05）总览数据**
-- DAU：36,010
-- 新增用户：1,332
-- 收入：$23,689.53
-- 付费用户数：792
-- 付费率：2.20%
-- ARPU：$0.66
-- ARPPU：$29.91
+**昨日（2026-02-08）总览数据**
+- DAU：36,292
+- 新增用户：1,937
+- 收入：$30,644.19
+- 付费用户数：1,174
+- 付费率：3.23%
+- ARPU：$0.84
+- ARPPU：$26.10
 
-**对照前日（2026-02-04）变化：**
-- DAU：37,245 → 36,010 (<font color="green">-1,235</font>, <font color="green">-3.32%</font>)
-- 新增用户：1,336 → 1,332 (<font color="green">-4</font>, <font color="green">-0.3%</font>)
-- 收入：17,432.09 → 23,689.53 (<font color="red">6,257.44</font>, <font color="red">+35.9%</font>)
-- 付费用户数：752 → 792 (<font color="red">40</font>, <font color="red">+5.32%</font>)
-- 付费率：2.02% → 2.20% (<font color="red">0.18</font>, <font color="red">+8.91%</font>)
-- ARPU：0.47 → 0.66 (<font color="red">0.19</font>, <font color="red">+40.43%</font>)
-- ARPPU：23.18 → 29.91 (<font color="red">6.73</font>, <font color="red">+29.03%</font>)
+**对照前日（2026-02-07）变化：**
+- DAU：34,951 → 36,292 (<font color="red">1,341</font>, <font color="red">+3.84%</font>)
+- 新增用户：1,628 → 1,937 (<font color="red">309</font>, <font color="red">+18.98%</font>)
+- 收入：23,861.82 → 30,644.19 (<font color="red">6,782.37</font>, <font color="red">+28.42%</font>)
+- 付费用户数：903 → 1,174 (<font color="red">271</font>, <font color="red">+30.01%</font>)
+- 付费率：2.58% → 3.23% (<font color="red">0.65</font>, <font color="red">+25.19%</font>)
+- ARPU：0.68 → 0.84 (<font color="red">0.16</font>, <font color="red">+23.53%</font>)
+- ARPPU：26.43 → 26.1 (<font color="green">-0.33</font>, <font color="green">-1.25%</font>)
 
 **变化原因细拆：**
-- 收入增长29%来自Steam：该渠道收入增长$1,821.16，占总收入增长的29%
-- DAU下降80%来自PC官包：该渠道DAU减少921，占总DAU下降的80%
-- 收入增长49%来自美国：该国家收入增长$1,813.84，占总收入增长的49%
-- DAU下降45%来自日本：该国家DAU减少213，占总DAU下降的45%
+- 收入增长39%来自PC官包：该渠道收入增长$2,678.07，占总收入增长的39%
+- DAU增长39%来自PC官包：该渠道DAU增长554，占总DAU增长的39%
+- 收入增长73%来自日本：该国家收入增长$3,311.27，占总收入增长的73%
+- DAU增长45%来自日本：该国家DAU增长292，占总DAU增长的45%
