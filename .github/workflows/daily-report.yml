@@ -21,21 +21,35 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Clear pip cache
+        run: |
+          pip cache purge || echo "No cache to clear"
+
       - name: Install coze-workload-identity
         run: |
+          echo "=== Python Path ==="
+          python -c "import sys; print('\n'.join(sys.path))"
+          echo ""
           echo "=== Installing coze-workload-identity ==="
-          pip install coze-workload-identity
-          python -c "import coze_workload_identity; print(f'✅ coze_workload_identity version: {coze_workload_identity.__version__}')"
+          pip install --no-cache-dir coze-workload-identity
+          echo ""
+          echo "=== Checking installation ==="
+          python -c "import coze_workload_identity; print(f'✅ coze_workload_identity version: {coze_workload_identity.__version__}'); print(f'Location: {coze_workload_identity.__file__}')"
+          echo ""
+          echo "=== Installed packages ==="
+          pip list | grep -i coze
 
       - name: Install other dependencies
         run: |
-          pip install langchain langgraph langchain-openai pydantic requests schedule
-          pip install coze-coding-dev-sdk coze-coding-utils cozeloop
+          pip install --no-cache-dir langchain langgraph langchain-openai pydantic requests schedule
+          pip install --no-cache-dir coze-coding-dev-sdk coze-coding-utils cozeloop
 
-      - name: Test Python environment
+      - name: Test all imports
         run: |
-          python -c "import sys; print(f'Python version: {sys.version}')"
-          python -c "import coze_workload_identity; print(f'✅ coze_workload_identity imported successfully')"
+          echo "=== Testing all required imports ==="
+          python -c "import coze_workload_identity; print('✅ coze_workload_identity')"
+          python -c "from coze_workload_identity import Client; print('✅ Client from coze_workload_identity')"
+          python -c "from tools.feishu_bitable_tool import FeishuBitableClient, get_access_token; print('✅ FeishuBitableClient')"
 
       - name: Generate 二重螺旋-海外 report
         env:
