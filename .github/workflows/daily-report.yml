@@ -20,11 +20,17 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          cache: 'pip'
 
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt
+          python -m pip install --upgrade pip
+          echo "=== Installing coze-workload-identity ==="
+          pip install coze-workload-identity==0.1.4
+          echo "=== Verifying installation ==="
+          python -c "import coze_workload_identity; print(f'✅ coze_workload_identity installed: {coze_workload_identity.__version__}')"
+          echo "=== Installing other dependencies ==="
+          pip install langchain langgraph langchain-openai pydantic requests schedule
+          pip install coze-coding-dev-sdk coze-coding-utils cozeloop
 
       - name: Generate 二重螺旋-海外 report
         env:
