@@ -20,30 +20,44 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip'
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install langchain langgraph langchain-openai pydantic requests schedule coze-coding-dev-sdk coze-coding-utils
+          pip install -r requirements.txt
 
       - name: Generate 二重螺旋-海外 report
         env:
-          COZE_WORKLOAD_IDENTITY_API_KEY: ${{ secrets.COZE_API_KEY }}
-          COZE_INTEGRATION_MODEL_BASE_URL: ${{ secrets.COZE_MODEL_BASE_URL }}
+          COZE_WORKLOAD_IDENTITY_CLIENT_ID: ${{ secrets.COZE_CLIENT_ID }}
+          COZE_WORKLOAD_IDENTITY_CLIENT_SECRET: ${{ secrets.COZE_CLIENT_SECRET }}
+          COZE_WORKLOAD_IDENTITY_TOKEN_ENDPOINT: ${{ secrets.COZE_TOKEN_ENDPOINT }}
+          COZE_WORKLOAD_ACCESS_TOKEN_ENDPOINT: ${{ secrets.COZE_ACCESS_TOKEN_ENDPOINT }}
+          COZE_OUTBOUND_AUTH_ENDPOINT: ${{ secrets.COZE_OUTBOUND_AUTH_ENDPOINT }}
+          COZE_SERVER_ENV: prod
         run: |
           python scripts/generate_report.py --config scripts/projects/project_ershong.json
 
       - name: Generate Pocket-小程序 report
+        if: success()
         env:
-          COZE_WORKLOAD_IDENTITY_API_KEY: ${{ secrets.COZE_API_KEY }}
-          COZE_INTEGRATION_MODEL_BASE_URL: ${{ secrets.COZE_MODEL_BASE_URL }}
+          COZE_WORKLOAD_IDENTITY_CLIENT_ID: ${{ secrets.COZE_CLIENT_ID }}
+          COZE_WORKLOAD_IDENTITY_CLIENT_SECRET: ${{ secrets.COZE_CLIENT_SECRET }}
+          COZE_WORKLOAD_IDENTITY_TOKEN_ENDPOINT: ${{ secrets.COZE_TOKEN_ENDPOINT }}
+          COZE_WORKLOAD_ACCESS_TOKEN_ENDPOINT: ${{ secrets.COZE_ACCESS_TOKEN_ENDPOINT }}
+          COZE_OUTBOUND_AUTH_ENDPOINT: ${{ secrets.COZE_OUTBOUND_AUTH_ENDPOINT }}
+          COZE_SERVER_ENV: prod
         run: |
           python scripts/generate_report.py --config scripts/projects/project_pocket.json
 
       - name: Generate SGame-小程序 report
+        if: success()
         env:
-          COZE_WORKLOAD_IDENTITY_API_KEY: ${{ secrets.COZE_API_KEY }}
-          COZE_INTEGRATION_MODEL_BASE_URL: ${{ secrets.COZE_MODEL_BASE_URL }}
+          COZE_WORKLOAD_IDENTITY_CLIENT_ID: ${{ secrets.COZE_CLIENT_ID }}
+          COZE_WORKLOAD_IDENTITY_CLIENT_SECRET: ${{ secrets.COZE_CLIENT_SECRET }}
+          COZE_WORKLOAD_IDENTITY_TOKEN_ENDPOINT: ${{ secrets.COZE_TOKEN_ENDPOINT }}
+          COZE_WORKLOAD_ACCESS_TOKEN_ENDPOINT: ${{ secrets.COZE_ACCESS_TOKEN_ENDPOINT }}
+          COZE_OUTBOUND_AUTH_ENDPOINT: ${{ secrets.COZE_OUTBOUND_AUTH_ENDPOINT }}
+          COZE_SERVER_ENV: prod
         run: |
           python scripts/generate_report.py --config scripts/projects/project_sgame.json
 
