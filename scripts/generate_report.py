@@ -444,8 +444,12 @@ class ConfigurableReportGenerator:
 
         return "\n".join(report_lines)
 
-    def generate_and_send(self):
-        """生成并发送报告"""
+    def generate_and_send(self, dry_run=False):
+        """生成并发送报告
+
+        Args:
+            dry_run: 如果为 True，只生成报告文件，不发送到飞书
+        """
         # 生成报告
         report = self._generate_report()
 
@@ -471,13 +475,18 @@ class ConfigurableReportGenerator:
             print("✅ 分析完成！")
             print(f"📄 报告已保存到: {filename}")
 
-            # 发送到飞书
-            print("\n正在发送报告到飞书群组...")
-            import os
-            os.environ["FEISHU_WEBHOOK_URL"] = self.feishu_config.get("webhook_url")
+            # 发送到飞书（除非是 dry_run 模式）
+            if not dry_run:
+                print("\n正在发送报告到飞书群组...")
+                import os
+                os.environ["FEISHU_WEBHOOK_URL"] = self.feishu_config.get("webhook_url")
 
-            from daily_report_main import send_to_feishu
-            send_to_feishu(f"🎮 {title}", report)
+                from daily_report_main import send_to_feishu
+                send_to_feishu(f"🎮 {title}", report)
+                print("✅ 报告已成功发送到飞书群组！")
+            else:
+                print("\n🔒 [DRY-RUN 模式] 跳过发送到飞书群组")
+                print(f"📤 如需发送，请移除 --dry-run 参数")
         else:
             print("❌ 报告生成失败")
 
@@ -486,10 +495,15 @@ def main():
     """主函数"""
     parser = argparse.ArgumentParser(description="生成数据分析报告")
     parser.add_argument("--config", required=True, help="配置文件路径")
+    parser.add_argument("--dry-run", action="store_true", help="只生成报告，不发送到飞书")
     args = parser.parse_args()
 
     generator = ConfigurableReportGenerator(args.config)
-    generator.generate_and_send()
+
+    if args.dry_run:
+        print("⚠️  运行在 DRY-RUN 模式：将只生成报告文件，不会发送到飞书群组\n")
+
+    generator.generate_and_send(dry_run=args.dry_run)
 
 
 if __name__ == "__main__":

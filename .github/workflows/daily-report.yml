@@ -35,7 +35,7 @@ jobs:
           COZE_OUTBOUND_AUTH_ENDPOINT: ${{ secrets.COZE_OUTBOUND_AUTH_ENDPOINT }}
           COZE_SERVER_ENV: prod
         run: |
-          python scripts/generate_report.py --config scripts/projects/project_ershong.json
+          python scripts/generate_report.py --config scripts/projects/project_ershong.json --dry-run
 
       - name: Generate Pocket-小程序 report
         if: success()
@@ -47,7 +47,7 @@ jobs:
           COZE_OUTBOUND_AUTH_ENDPOINT: ${{ secrets.COZE_OUTBOUND_AUTH_ENDPOINT }}
           COZE_SERVER_ENV: prod
         run: |
-          python scripts/generate_report.py --config scripts/projects/project_pocket.json
+          python scripts/generate_report.py --config scripts/projects/project_pocket.json --dry-run
 
       - name: Generate SGame-小程序 report
         if: success()
@@ -59,7 +59,7 @@ jobs:
           COZE_OUTBOUND_AUTH_ENDPOINT: ${{ secrets.COZE_OUTBOUND_AUTH_ENDPOINT }}
           COZE_SERVER_ENV: prod
         run: |
-          python scripts/generate_report.py --config scripts/projects/project_sgame.json
+          python scripts/generate_report.py --config scripts/projects/project_sgame.json --dry-run
 
       - name: Upload reports as artifacts
         if: always()
