@@ -1,23 +1,23 @@
-**昨日（2026-02-08）总览数据**
-- DAU：36,292
-- 新增用户：1,937
-- 收入：$30,644.19
-- 付费用户数：1,174
-- 付费率：3.23%
-- ARPU：$0.84
-- ARPPU：$26.10
+**昨日（2026-02-09）总览数据**
+- DAU：36,323
+- 新增用户：1,643
+- 收入：$39,229.05
+- 付费用户数：1,568
+- 付费率：4.32%
+- ARPU：$1.08
+- ARPPU：$25.02
 
-**对照前日（2026-02-07）变化：**
-- DAU：34,951 → 36,292 (<font color="red">1,341</font>, <font color="red">+3.84%</font>)
-- 新增用户：1,628 → 1,937 (<font color="red">309</font>, <font color="red">+18.98%</font>)
-- 收入：23,861.82 → 30,644.19 (<font color="red">6,782.37</font>, <font color="red">+28.42%</font>)
-- 付费用户数：903 → 1,174 (<font color="red">271</font>, <font color="red">+30.01%</font>)
-- 付费率：2.58% → 3.23% (<font color="red">0.65</font>, <font color="red">+25.19%</font>)
-- ARPU：0.68 → 0.84 (<font color="red">0.16</font>, <font color="red">+23.53%</font>)
-- ARPPU：26.43 → 26.1 (<font color="green">-0.33</font>, <font color="green">-1.25%</font>)
+**对照前日（2026-02-08）变化：**
+- DAU：36,292 → 36,323 (<font color="red">31</font>, <font color="red">+0.09%</font>)
+- 新增用户：1,937 → 1,643 (<font color="green">-294</font>, <font color="green">-15.18%</font>)
+- 收入：30,644.19 → 39,229.05 (<font color="red">8,584.86</font>, <font color="red">+28.01%</font>)
+- 付费用户数：1,174 → 1,568 (<font color="red">394</font>, <font color="red">+33.56%</font>)
+- 付费率：3.23% → 4.32% (<font color="red">1.09</font>, <font color="red">+33.75%</font>)
+- ARPU：0.84 → 1.08 (<font color="red">0.24</font>, <font color="red">+28.57%</font>)
+- ARPPU：26.1 → 25.02 (<font color="green">-1.08</font>, <font color="green">-4.14%</font>)
 
 **变化原因细拆：**
-- 收入增长39%来自PC官包：该渠道收入增长$2,678.07，占总收入增长的39%
-- DAU增长39%来自PC官包：该渠道DAU增长554，占总DAU增长的39%
-- 收入增长73%来自日本：该国家收入增长$3,311.27，占总收入增长的73%
-- DAU增长45%来自日本：该国家DAU增长292，占总DAU增长的45%
+- 收入增长44%来自安卓：该渠道收入增长$3,755.16，占总收入增长的44%
+- DAU增长93%来自PC官包：该渠道DAU增长357，占总DAU增长的93%
+- 收入增长47%来自美国：该国家收入增长$2,941.09，占总收入增长的47%
+- DAU增长1086%来自美国：该国家DAU增长304，占总DAU增长的1086%
