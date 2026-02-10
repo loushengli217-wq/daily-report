@@ -13,7 +13,7 @@
   "feishu": {
     "app_token": "X66BbAxJja6Ey9s7k8rczQpFnJe",
     "table_id": "tblKXnQojLx6qAKu",
-    "webhook_url": "https://open.feishu.cn/open-apis/bot/v2/hook/b51fc7f7-41a9-4c7e-a599-bfb8c9723d23",
+    "webhook_url": "https://open.feishu.cn/open-apis/bot/v2/hook/c174f80c-d02e-4435-84b0-778f6f5a302f",
     "tables": {
       "base": {
         "name": "基础数据总览",
