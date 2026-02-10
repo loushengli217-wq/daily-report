@@ -16,6 +16,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Check Python version
+        run: python --version
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -25,6 +28,9 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+
+      - name: Check Python after setup
+        run: python --version
 
       - name: Generate 二重螺旋-海外 report
         env:
