@@ -45,6 +45,13 @@ jobs:
           pip install --no-cache-dir coze-coding-dev-sdk coze-coding-utils cozeloop
 
       - name: Test all imports
+        env:
+          COZE_WORKLOAD_IDENTITY_CLIENT_ID: ${{ secrets.COZE_CLIENT_ID }}
+          COZE_WORKLOAD_IDENTITY_CLIENT_SECRET: ${{ secrets.COZE_CLIENT_SECRET }}
+          COZE_WORKLOAD_IDENTITY_TOKEN_ENDPOINT: ${{ secrets.COZE_TOKEN_ENDPOINT }}
+          COZE_WORKLOAD_ACCESS_TOKEN_ENDPOINT: ${{ secrets.COZE_ACCESS_TOKEN_ENDPOINT }}
+          COZE_OUTBOUND_AUTH_ENDPOINT: ${{ secrets.COZE_OUTBOUND_AUTH_ENDPOINT }}
+          COZE_SERVER_ENV: prod
         run: |
           echo "=== Testing all required imports ==="
           python -c "import coze_workload_identity; print('✅ coze_workload_identity')"
