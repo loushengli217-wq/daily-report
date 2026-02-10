@@ -21,16 +21,21 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install dependencies
+      - name: Install coze-workload-identity
         run: |
-          python -m pip install --upgrade pip
           echo "=== Installing coze-workload-identity ==="
-          pip install coze-workload-identity==0.1.4
-          echo "=== Verifying installation ==="
-          python -c "import coze_workload_identity; print(f'✅ coze_workload_identity installed: {coze_workload_identity.__version__}')"
-          echo "=== Installing other dependencies ==="
+          pip install coze-workload-identity
+          python -c "import coze_workload_identity; print(f'✅ coze_workload_identity version: {coze_workload_identity.__version__}')"
+
+      - name: Install other dependencies
+        run: |
           pip install langchain langgraph langchain-openai pydantic requests schedule
           pip install coze-coding-dev-sdk coze-coding-utils cozeloop
+
+      - name: Test Python environment
+        run: |
+          python -c "import sys; print(f'Python version: {sys.version}')"
+          python -c "import coze_workload_identity; print(f'✅ coze_workload_identity imported successfully')"
 
       - name: Generate 二重螺旋-海外 report
         env:
