@@ -232,24 +232,51 @@ class ConfigurableReportGenerator:
         # 获取表格配置
         tables_config = self.feishu_config.get("tables", {})
 
-        # 构造 table_configs 列表
-        table_configs = [
-            {"name": tables_config.get("base", {}).get("name", "基础数据总览"),
-             "table_id": tables_config.get("base", {}).get("table_id"),
-             "view_id": tables_config.get("base", {}).get("view_id")},
-            {"name": tables_config.get("channel", {}).get("name", "渠道数据"),
-             "table_id": tables_config.get("channel", {}).get("table_id"),
-             "view_id": tables_config.get("channel", {}).get("view_id")},
-            {"name": tables_config.get("country", {}).get("name", "媒体渠道"),
-             "table_id": tables_config.get("country", {}).get("table_id"),
-             "view_id": tables_config.get("country", {}).get("view_id")}
-        ]
+        # 动态构造 table_configs 列表，只包含实际存在的表格
+        table_configs = []
+        if "base" in tables_config and tables_config["base"].get("table_id"):
+            table_configs.append({
+                "type": "base",
+                "name": tables_config["base"].get("name", "基础数据总览"),
+                "table_id": tables_config["base"].get("table_id"),
+                "view_id": tables_config["base"].get("view_id")
+            })
+        if "channel" in tables_config and tables_config["channel"].get("table_id"):
+            table_configs.append({
+                "type": "channel",
+                "name": tables_config["channel"].get("name", "渠道数据"),
+                "table_id": tables_config["channel"].get("table_id"),
+                "view_id": tables_config["channel"].get("view_id")
+            })
+        if "country" in tables_config and tables_config["country"].get("table_id"):
+            table_configs.append({
+                "type": "country",
+                "name": tables_config["country"].get("name", "媒体渠道"),
+                "table_id": tables_config["country"].get("table_id"),
+                "view_id": tables_config["country"].get("view_id")
+            })
+
+        # 按类型索引查找表格配置
+        def get_table_config(table_type):
+            for cfg in table_configs:
+                if cfg["type"] == table_type:
+                    return cfg
+            return None
 
         # 获取所有数据
         print("\n获取数据...")
-        base_records = self.processor.fetch_data(table_configs[0]['table_id'], table_configs[0]['view_id'])
-        channel_records = self.processor.fetch_data(table_configs[1]['table_id'], table_configs[1]['view_id'])
-        country_records = self.processor.fetch_data(table_configs[2]['table_id'], table_configs[2]['view_id'])
+        base_config = get_table_config("base")
+        if not base_config:
+            print("❌ 未找到基础数据表配置！")
+            return None
+
+        base_records = self.processor.fetch_data(base_config['table_id'], base_config['view_id'])
+
+        channel_config = get_table_config("channel")
+        channel_records = self.processor.fetch_data(channel_config['table_id'], channel_config['view_id']) if channel_config else []
+
+        country_config = get_table_config("country")
+        country_records = self.processor.fetch_data(country_config['table_id'], country_config['view_id']) if country_config else []
 
         # 检查可用日期
         from collections import Counter
@@ -462,9 +489,10 @@ class ConfigurableReportGenerator:
             title_template = self.report_config.get("title_template", "{project_name} - {date} 日报")
             title = title_template.format(project_name=self.project_name, date=yesterday_str)
 
-            # 保存到文件
+            # 保存到文件（添加标题）
             filename = f"daily_report_{self.project_id}.md"
             with open(filename, 'w', encoding='utf-8') as f:
+                f.write(f"# {title}\n\n")
                 f.write(report)
 
             print("\n" + "="*80)

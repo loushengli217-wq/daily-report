@@ -58,29 +58,28 @@ jobs:
           python -c "from coze_workload_identity import Client; print('✅ Client from coze_workload_identity')"
           python -c "import sys; sys.path.insert(0, 'src'); from tools.feishu_bitable_tool import FeishuBitableClient, get_access_token; print('✅ FeishuBitableClient')"
 
-      # 临时注释：只测试 SGame-小程序
-      # - name: Generate 二重螺旋-海外 report
-      #   env:
-      #     COZE_WORKLOAD_IDENTITY_CLIENT_ID: ${{ secrets.COZE_CLIENT_ID }}
-      #     COZE_WORKLOAD_IDENTITY_CLIENT_SECRET: ${{ secrets.COZE_CLIENT_SECRET }}
-      #     COZE_WORKLOAD_IDENTITY_TOKEN_ENDPOINT: ${{ secrets.COZE_TOKEN_ENDPOINT }}
-      #     COZE_WORKLOAD_ACCESS_TOKEN_ENDPOINT: ${{ secrets.COZE_ACCESS_TOKEN_ENDPOINT }}
-      #     COZE_OUTBOUND_AUTH_ENDPOINT: ${{ secrets.COZE_OUTBOUND_AUTH_ENDPOINT }}
-      #     COZE_SERVER_ENV: prod
-      #   run: |
-      #     python scripts/generate_report.py --config scripts/projects/project_ershong.json
+      - name: Generate 二重螺旋-海外 report
+        env:
+          COZE_WORKLOAD_IDENTITY_CLIENT_ID: ${{ secrets.COZE_CLIENT_ID }}
+          COZE_WORKLOAD_IDENTITY_CLIENT_SECRET: ${{ secrets.COZE_CLIENT_SECRET }}
+          COZE_WORKLOAD_IDENTITY_TOKEN_ENDPOINT: ${{ secrets.COZE_TOKEN_ENDPOINT }}
+          COZE_WORKLOAD_ACCESS_TOKEN_ENDPOINT: ${{ secrets.COZE_ACCESS_TOKEN_ENDPOINT }}
+          COZE_OUTBOUND_AUTH_ENDPOINT: ${{ secrets.COZE_OUTBOUND_AUTH_ENDPOINT }}
+          COZE_SERVER_ENV: prod
+        run: |
+          python scripts/generate_report.py --config scripts/projects/project_ershong.json
 
-      # - name: Generate Pocket-小程序 report
-      #   if: success()
-      #   env:
-      #     COZE_WORKLOAD_IDENTITY_CLIENT_ID: ${{ secrets.COZE_CLIENT_ID }}
-      #     COZE_WORKLOAD_IDENTITY_CLIENT_SECRET: ${{ secrets.COZE_CLIENT_SECRET }}
-      #     COZE_WORKLOAD_IDENTITY_TOKEN_ENDPOINT: ${{ secrets.COZE_TOKEN_ENDPOINT }}
-      #     COZE_WORKLOAD_ACCESS_TOKEN_ENDPOINT: ${{ secrets.COZE_ACCESS_TOKEN_ENDPOINT }}
-      #     COZE_OUTBOUND_AUTH_ENDPOINT: ${{ secrets.COZE_OUTBOUND_AUTH_ENDPOINT }}
-      #     COZE_SERVER_ENV: prod
-      #   run: |
-      #     python scripts/generate_report.py --config scripts/projects/project_pocket.json
+      - name: Generate Pocket-小程序 report
+        if: success()
+        env:
+          COZE_WORKLOAD_IDENTITY_CLIENT_ID: ${{ secrets.COZE_CLIENT_ID }}
+          COZE_WORKLOAD_IDENTITY_CLIENT_SECRET: ${{ secrets.COZE_CLIENT_SECRET }}
+          COZE_WORKLOAD_IDENTITY_TOKEN_ENDPOINT: ${{ secrets.COZE_TOKEN_ENDPOINT }}
+          COZE_WORKLOAD_ACCESS_TOKEN_ENDPOINT: ${{ secrets.COZE_ACCESS_TOKEN_ENDPOINT }}
+          COZE_OUTBOUND_AUTH_ENDPOINT: ${{ secrets.COZE_OUTBOUND_AUTH_ENDPOINT }}
+          COZE_SERVER_ENV: prod
+        run: |
+          python scripts/generate_report.py --config scripts/projects/project_pocket.json
 
       - name: Generate SGame-小程序 report
         env:
