@@ -49,7 +49,7 @@ jobs:
           echo "=== Testing all required imports ==="
           python -c "import coze_workload_identity; print('✅ coze_workload_identity')"
           python -c "from coze_workload_identity import Client; print('✅ Client from coze_workload_identity')"
-          python -c "from tools.feishu_bitable_tool import FeishuBitableClient, get_access_token; print('✅ FeishuBitableClient')"
+          python -c "import sys; sys.path.insert(0, 'src'); from tools.feishu_bitable_tool import FeishuBitableClient, get_access_token; print('✅ FeishuBitableClient')"
 
       - name: Generate 二重螺旋-海外 report
         env:
