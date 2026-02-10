@@ -1,0 +1,6 @@
+langchain==1.0.3
+langgraph==1.0.2
+langchain-openai==1.0.1
+pydantic==2.12.3
+requests==2.32.5
+schedule==1.2.2
