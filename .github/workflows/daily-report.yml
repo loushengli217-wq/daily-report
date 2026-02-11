@@ -31,7 +31,7 @@ jobs:
           python -c "import sys; print('\n'.join(sys.path))"
           echo ""
           echo "=== Installing coze-workload-identity ==="
-          pip install --no-cache-dir coze-workload-identity
+          pip install --no-cache-dir coze-workload-identity httpx
           echo ""
           echo "=== Checking installation ==="
           python -c "import coze_workload_identity; print(f'✅ coze-workload_identity version: {coze_workload_identity.__version__}'); print(f'Location: {coze_workload_identity.__file__}')"
