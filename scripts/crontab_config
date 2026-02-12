@@ -1,0 +1,2 @@
+# 每天北京时间 10:05 执行日报生成
+5 10 * * * /workspace/projects/scripts/run_all_reports.sh >> /workspace/projects/logs/cron.log 2>&1
